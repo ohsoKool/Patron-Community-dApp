@@ -1,7 +1,11 @@
-export default function Home() {
+import React from "react";
+
+const page = () => {
   return (
-    <main>
-      <h1 className="text-white">THIS IS MAIN PAGE</h1>
-    </main>
+    <>
+      <h1 className="text-white">THIS IS LANDING PAGE</h1>
+    </>
   );
-}
+};
+
+export default page;

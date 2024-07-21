@@ -3,6 +3,7 @@ import { devtools, persist } from "zustand/middleware";
 
 type State = {
   walletAddress: String | null;
+  isConnected: boolean;
 };
 
 type Actions = {
@@ -12,6 +13,7 @@ type Actions = {
 
 const initialState: State = {
   walletAddress: null,
+  isConnected: false,
 };
 
 type walletSliceType = State & Actions;
@@ -24,6 +26,7 @@ const walletSlice: StateCreator<walletSliceType, [], [], walletSliceType> = (
     set((state) => ({
       ...state,
       walletAddress: address,
+      isConnected: true,
     }));
   },
   reset: () => {
