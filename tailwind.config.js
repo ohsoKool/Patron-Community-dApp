@@ -17,7 +17,32 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        'audio-wide': ["Audiowide", "sans-serif"],
+        'fira-code': ["Fira Code"],
+      },
       colors: {
+
+        // GENERAL COLORS 
+        PATRON_BLACK: "#030303",
+        PATRON_DARK_GRAY: '#101010',
+        PATRON_LIGHT_GRAY: '#171717',
+        PATRON_CYAN: '#009BBE',
+        PATRON_GREEN: '#00CA87',
+        PATRON_PURPLE: '#7200BE',
+        PATRON_YELLOW: '#CBB300',
+
+
+
+        // BORDER COLORS
+        PATRON_BORDER_COLOR: '#2A2A2A',
+
+        // TEXT COLORS 
+        PATRON_TEXT_WHITE_SECONDARY: '#9D9D9D',
+        PATRON_TEXT_WHITE_PRIMARY: '#C5C5C5',
+
+
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
