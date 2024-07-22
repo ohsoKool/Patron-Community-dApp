@@ -8,7 +8,7 @@ interface NavBarType {
 const NavBar = ({ showAddress = false }: NavBarType) => {
   const { walletAddress } = useWalletStore();
   return (
-    <nav className="flex items-center justify-between w-full border-b border-b-PATRON_BORDER_COLOR px-10 py-3 pb-5">
+    <nav className="flex items-center justify-between w-full border-b border-b-PATRON_BORDER_COLOR px-10 py-3 pt-4">
       <div className="flex justify-center items-center gap-2">
         <img className="h-5" src="/logo.svg" alt="logo" />
         <h1 className="text-xl font-audio-wide text-white">Patron</h1>
