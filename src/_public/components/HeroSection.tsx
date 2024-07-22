@@ -24,7 +24,6 @@ export default function HeroSection() {
             const account = accounts[0];
             setWalletAddress(account);
             navigate('/all-groups');
-            console.log('CLICKED');
           }
         }
       } catch (error) {
