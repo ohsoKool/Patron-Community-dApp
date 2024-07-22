@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  address   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerOf  Group[]
+  memberof  GroupUser[]
+  posts Post[] @relation(name: "ownership")
+  solvedPosts Post[] @relation(name: "userWhoSolved")
+  comments Comment[]
+
+  @@map("users")
+}
+
+model Group {
+  id        String      @id @default(cuid())
+  groupName String
+  groupDescription String
+  groupCoverImage String
+  ownerId String
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  members   GroupUser[] 
+  posts Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("groups")
+}
+
+model GroupUser {
+  id      String      @id @default(cuid())
+  groupId String  @unique
+  userId  String  @unique
+  group   Group    @relation(fields: [groupId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+
+  @@map("group_users")
+}
+
+model Post {
+  id String @id @default(cuid())
+  postImage String?
+  postTitle String
+  postDescription String
+  ownerId String
+  onwner User @relation(fields: [ownerId] , references: [id] , name: "ownership")
+  groupId String
+  group Group @relation(fields: [groupId] , references: [id])
+
+  whoSolvedId String?
+  whoSolved User? @relation(fields: [whoSolvedId] , references: [id],name: "userWhoSolved")
+  isSolved Boolean @default(false)
+
+  comment Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts")
+}
+
+model Comment {
+  id String @id @default(cuid())
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+  postId String
+  post Post @relation(fields: [postId], references: [id])
+
+  @@map("comments")
+}

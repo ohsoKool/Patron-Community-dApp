@@ -3,34 +3,26 @@ import { MoveRight } from 'lucide-react';
 import BlurIn from '@/components/magicui/blur-in';
 import NavBar from '@/_public/components/NavBar';
 import Display from '@/_public/components/Display';
-import { useNavigate } from 'react-router-dom';
-import useWalletStore from '@/lib/zustand/WalletStore';
+import { useEffect, useState } from 'react';
 
 export default function HeroSection() {
-  const navigate = useNavigate();
-  const { setWalletAddress, isConnected } = useWalletStore();
+  const [walletAddress, setWalletAddress] = useState('');
 
-  const connectWallet = async () => {
-    if (isConnected) {
-      navigate('/all-groups');
-    } else {
-      try {
-        if (window.ethereum) {
-          const accounts = await window.ethereum.request!({
-            method: 'eth_requestAccounts',
-          });
-
-          if (Array.isArray(accounts) && accounts.length > 0) {
-            const account = accounts[0];
-            setWalletAddress(account);
-            navigate('/all-groups');
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum
+        .request({
+          method: 'eth_requestAccounts',
+        })
+        .then((response) => {
+          if (Array.isArray(response) && response.length > 0) {
+            setWalletAddress(response[0]);
           }
-        }
-      } catch (error) {
-        alert('PLEASE INSTALL META MASK');
-      }
+        });
     }
-  };
+  }, []);
+
+  console.log(walletAddress);
 
   return (
     <div className="bg-PATRON_BLACK z-10">
@@ -58,11 +50,8 @@ export default function HeroSection() {
             It's a platform designed to foster meaningful connections and spark discussions within
             groups focused on shared passions.
           </p>
-          <Button
-            onClick={connectWallet}
-            className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black"
-          >
-            {isConnected ? 'Make Community' : 'Connect your wallet'}
+          <Button className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black">
+            {'Make Community'}
 
             <MoveRight className="h-4 ml-2" />
           </Button>
