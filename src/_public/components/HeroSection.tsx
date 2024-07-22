@@ -9,6 +9,7 @@ import useWalletStore from '@/lib/zustand/WalletStore';
 export default function HeroSection() {
   const navigate = useNavigate();
   const { setWalletAddress, isConnected } = useWalletStore();
+
   const connectWallet = async () => {
     if (isConnected) {
       navigate('/all-groups');
@@ -23,7 +24,6 @@ export default function HeroSection() {
             const account = accounts[0];
             setWalletAddress(account);
             navigate('/all-groups');
-            console.log('CLICKED');
           }
         }
       } catch (error) {
