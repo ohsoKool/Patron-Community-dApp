@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import React from 'react';
+import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 export interface MagicCardProps {
   children: React.ReactNode;
@@ -15,9 +15,9 @@ export interface MagicCardProps {
 
 export function MagicCard({
   children,
-  className = "",
+  className = '',
   gradientSize = 200,
-  gradientColor = "#262626",
+  gradientColor = '#262626',
 }: MagicCardProps) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -31,8 +31,8 @@ export function MagicCard({
         mouseY.set(e.clientY - top);
       }}
       className={cn(
-        "group relative flex size-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900 border text-black dark:text-white",
-        className,
+        'group relative flex size-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 border text-black dark:text-white',
+        className
       )}
     >
       <div className="relative z-10">{children}</div>

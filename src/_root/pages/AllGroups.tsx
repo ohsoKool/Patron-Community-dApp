@@ -10,13 +10,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { getRandomNumber } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import GroupGrid from './components/GroupGrid';
+import { useLocation, useNavigate } from 'react-router-dom';
+import GroupGrid from '@/_root/components/GroupGrid';
 
 const AllGroups = () => {
   const { pathname } = useLocation();
   const [randomNumber, setRandomNumber] = useState(0);
   const [pathList, setPathList] = useState<String[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const number = getRandomNumber(0, colors.length - 1);
@@ -76,7 +77,12 @@ const AllGroups = () => {
           <li className="list-none">
             <div className="flex justify-between pr-10 border-b border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
               <h1 className="text-lg">MENU</h1>
-              <Button className="h-7 text-sm text-rose-400">Create</Button>
+              <Button
+                onClick={() => navigate('/create-group')}
+                className="h-7 text-sm text-rose-400 md:hidden"
+              >
+                Create
+              </Button>
             </div>
             <div className="flex flex-row md:flex-col justify-start items-center md:justify-center md:items-start gap-3 px-4 py-3 md:py-7 border-b border-b-PATRON_BORDER_COLOR">
               {menuObject.map((each) => (
@@ -104,7 +110,12 @@ const AllGroups = () => {
             </div>
             <div className="pb-10 py-3 flex flex-row flex-wrap justify-start items-center gap-3 px-4 border-b border-b-PATRON_BORDER_COLOR">
               <p className="text-xs">Have ideas in mind ? Want to create your community?</p>
-              <Button className="h-7 text-sm text-rose-400">Create</Button>
+              <Button
+                onClick={() => navigate('/create-group')}
+                className="h-7 text-sm text-rose-400"
+              >
+                Create
+              </Button>
             </div>
           </li>
         </div>
