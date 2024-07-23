@@ -1,9 +1,9 @@
-import useWalletStore from '@/lib/zustand/WalletStore';
+import { getItemWithExpiry } from '@/lib/localStorage';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const RootLayout = () => {
-  const { isConnected } = useWalletStore();
-  return <>{isConnected ? <Outlet /> : <Navigate to="/auth" />}</>;
+  const localStorageAddress = getItemWithExpiry('walletAddress');
+  return <>{localStorageAddress ? <Outlet /> : <Navigate to="/" />}</>;
 };
 
 export default RootLayout;

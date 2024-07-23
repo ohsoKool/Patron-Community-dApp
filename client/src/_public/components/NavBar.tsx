@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import useWalletStore from '@/lib/zustand/WalletStore';
+import { getItemWithExpiry } from '@/lib/localStorage';
 import { Link } from 'react-router-dom';
 
 interface NavBarType {
@@ -7,7 +7,7 @@ interface NavBarType {
 }
 
 const NavBar = ({ showAddress = false }: NavBarType) => {
-  const { walletAddress } = useWalletStore();
+  const localStorageAddress = getItemWithExpiry('walletAddress');
   return (
     <nav className="flex items-center justify-between w-full border-b border-b-PATRON_BORDER_COLOR px-10 py-3 pt-4">
       <div className="flex justify-center items-center gap-2">
@@ -16,12 +16,14 @@ const NavBar = ({ showAddress = false }: NavBarType) => {
           <h1 className="text-xl font-audio-wide text-white">Patron</h1>
         </Link>
 
-        {showAddress && walletAddress && (
+        {showAddress && localStorageAddress && (
           <Badge
             variant={'secondary'}
             className="h-6 ml-1 border-PATRON_BORDER_COLOR cursor-pointer bg-PATRON_LIGHT_GRAY text-PATRON_TEXT_WHITE_SECONDARY hover:text-PATRON_TEXT_WHITE_PRIMARY"
           >
-            {walletAddress.slice(0, 7) + '...' + walletAddress.slice(8, walletAddress.length - 30)}
+            {localStorageAddress.slice(0, 7) +
+              '...' +
+              localStorageAddress.slice(8, localStorageAddress.length - 30)}
           </Badge>
         )}
       </div>
