@@ -13,6 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Nounce{
+  id String @id @default(cuid())
+  walletAddress String @unique
+  nounce String @unique
+
+  @@map("nounce")
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String

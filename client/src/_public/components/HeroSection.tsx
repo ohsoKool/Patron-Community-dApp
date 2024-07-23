@@ -4,25 +4,70 @@ import BlurIn from '@/components/magicui/blur-in';
 import NavBar from '@/_public/components/NavBar';
 import Display from '@/_public/components/Display';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Web3 from 'web3';
+
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 export default function HeroSection() {
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState<string>('');
 
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum
-        .request({
-          method: 'eth_requestAccounts',
-        })
+        .request({ method: 'eth_requestAccounts' })
         .then((response) => {
           if (Array.isArray(response) && response.length > 0) {
             setWalletAddress(response[0]);
           }
+        })
+        .catch((error: any) => {
+          console.error('Error requesting Ethereum accounts:', error);
         });
     }
   }, []);
 
-  console.log(walletAddress);
+  const web3 = new Web3(window.ethereum);
+
+  const signInWithEth = async () => {
+    if (!walletAddress) {
+      console.error('No wallet address found.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${serverUrl}/nounce/get-nounce`, {
+        params: { walletAddress },
+      });
+
+      const nonce = response.data.data.nounce;
+      console.log('NONCE: ', nonce);
+
+      if (typeof nonce !== 'string') {
+        console.error('Nonce is not a string:', nonce);
+        return;
+      }
+
+      try {
+        const signedNonce = await web3.eth.personal.sign(
+          nonce,
+          walletAddress,
+          '' // MetaMask will handle the signing
+        );
+        console.log('SIGNED NONCE: ', signedNonce);
+
+        const response1 = await axios.get(`${serverUrl}/nounce/verify-nounce`, {
+          params: { walletAddress, signedNonce },
+        });
+
+        console.log('VERIFIED RESPONSE: ', response1);
+      } catch (error) {
+        console.error('Error signing nonce:', error);
+      }
+    } catch (error) {
+      console.error('Error fetching nonce:', error);
+    }
+  };
 
   return (
     <div className="bg-PATRON_BLACK z-10">
@@ -55,6 +100,7 @@ export default function HeroSection() {
 
             <MoveRight className="h-4 ml-2" />
           </Button>
+          <Button onClick={signInWithEth}>Hello</Button>
         </div>
         {/* <div
           aria-hidden="true"

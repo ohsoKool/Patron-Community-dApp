@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { userRouter } from './routes/user.route';
 import { groupRouter } from './routes/group.route';
 import { groupUserRouter } from './routes/groupUser.route';
+import { nounceRouter } from './routes/nounce.route';
 
 dotenv.config({
     path: '../.env',
@@ -35,9 +36,10 @@ app.use(cookieParser());
 
 //############## ROUTES #####################
 
-app.use('/weeble/api/user', userRouter);
-app.use('/weeble/api/group', groupRouter);
-app.use('/weeble/api/groupUser', groupUserRouter);
+app.use('/patron/api/user', userRouter);
+app.use('/patron/api/group', groupRouter);
+app.use('/patron/api/groupUser', groupUserRouter);
+app.use('/patron/api/nounce', nounceRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('WORKING');
