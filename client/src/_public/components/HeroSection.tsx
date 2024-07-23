@@ -6,66 +6,126 @@ import Display from '@/_public/components/Display';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Web3 from 'web3';
+import { getItemWithExpiry, setItemWithExpiry } from '@/lib/localStorage';
+import { useNavigate } from 'react-router-dom';
+import useWalletStore from '@/lib/zustand/WalletStore';
+import { hexlify } from 'ethers';
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
+const ONE_DAY = 24 * 60 * 60 * 1000; // One day in milliseconds
+// const ONE_WEEK = 7 * ONE_DAY; // One week in milliseconds
+
 export default function HeroSection() {
   const [walletAddress, setWalletAddress] = useState<string>('');
+  const navigate = useNavigate();
+  const { setWalletAddress: setGlobalWalletAddress } = useWalletStore();
 
   useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum
-        .request({ method: 'eth_requestAccounts' })
-        .then((response) => {
-          if (Array.isArray(response) && response.length > 0) {
-            setWalletAddress(response[0]);
-          }
-        })
-        .catch((error: any) => {
-          console.error('Error requesting Ethereum accounts:', error);
-        });
+    const storedWalletAddress = getItemWithExpiry('walletAddress');
+    if (storedWalletAddress) {
+      setWalletAddress(storedWalletAddress);
+      setGlobalWalletAddress(storedWalletAddress);
     }
   }, []);
 
   const web3 = new Web3(window.ethereum);
 
   const signInWithEth = async () => {
-    if (!walletAddress) {
-      console.error('No wallet address found.');
+    if (walletAddress) {
+      navigate('/all-groups');
       return;
-    }
+    } else {
+      // GETTING WALLET ADDRESS
 
-    try {
-      const response = await axios.get(`${serverUrl}/nounce/get-nounce`, {
-        params: { walletAddress },
-      });
+      if (window.ethereum) {
+        console.log('THIS BLOCK EXECUTED');
+        await window.ethereum
+          .request({ method: 'eth_requestAccounts' })
+          .then((response) => {
+            if (Array.isArray(response) && response.length > 0) {
+              console.log('FETCHING WALLET ADDRESS: ', response[0]);
+              setWalletAddress(response[0]);
+              console.log('STATE WALLET ADDRES: ', walletAddress);
+              setItemWithExpiry('walletAddress', response[0], ONE_DAY);
+              console.log('LOCAL WALLET ADDRESS:', localStorage.getItem('walletAddress'));
+            }
+          })
+          .catch((error: any) => {
+            console.error('Error requesting Ethereum accounts:', error);
+          });
+      }
 
-      const nonce = response.data.data.nounce;
-      console.log('NONCE: ', nonce);
-
-      if (typeof nonce !== 'string') {
-        console.error('Nonce is not a string:', nonce);
+      if (!localStorage.getItem('walletAddress')) {
+        console.error('No wallet address found.');
         return;
       }
 
+      //CREATING AND VERIFYING NOUNCE
       try {
-        const signedNonce = await web3.eth.personal.sign(
-          nonce,
-          walletAddress,
-          '' // MetaMask will handle the signing
-        );
-        console.log('SIGNED NONCE: ', signedNonce);
-
-        const response1 = await axios.get(`${serverUrl}/nounce/verify-nounce`, {
-          params: { walletAddress, signedNonce },
+        const localStorageObject = JSON.parse(localStorage.getItem('walletAddress')!);
+        const { value } = localStorageObject;
+        console.log('LOCAL STORAGE OBJECT VALUE:  ', value);
+        const checkResponse = await axios.get(`${serverUrl}/nounce/check-walletAddress-exists`, {
+          params: { walletAddress: value },
         });
 
-        console.log('VERIFIED RESPONSE: ', response1);
+        console.log('CHECK RESPONSE: ', checkResponse.data.data.message);
+
+        let nounce: String;
+
+        if (!checkResponse.data.data.message) {
+          const createResponse = await axios.get(`${serverUrl}/nounce/create-nounce`, {
+            params: { walletAddress: value },
+          });
+
+          if (createResponse.data.data.nounce) {
+            console.log('CREATE RESPONSE: ', createResponse.data.data.nounce);
+            nounce = createResponse.data.data.nounce;
+          }
+        } else {
+          const GetResponse = await axios.get(`${serverUrl}/nounce/get-nounce`, {
+            params: { walletAddress: value },
+          });
+
+          if (GetResponse.data.data.nounce) {
+            console.log('GET RESPONSE: ', GetResponse.data.data.nounce);
+            nounce = GetResponse.data.data.nounce;
+          }
+        }
+
+        console.log('NONCE: ', nounce!);
+
+        if (typeof nounce! !== 'string') {
+          console.error('Nonce is not a string:', nounce!);
+          return;
+        }
+
+        console.log('SIGNING NOUNCE');
+
+        const bytes = new TextEncoder().encode(nounce);
+
+        console.log('HEXSTRING: ', bytes);
+
+        const signedNounce = await web3.eth.personal.sign(hexlify(bytes), value, '');
+
+        console.log('SIGNED NONCE: ', signedNounce);
+
+        const verifiedResponse = await axios.get(`${serverUrl}/nounce/verify-nounce`, {
+          params: { walletAddress: value, signedNounce },
+        });
+
+        console.log('VERIFIED RESPONSE: ', verifiedResponse.data.data.message);
+
+        if (verifiedResponse.data.data.message) {
+          setGlobalWalletAddress(value);
+          navigate('/all-groups');
+        } else {
+          alert('SOMETHING WENT WRONG');
+        }
       } catch (error) {
-        console.error('Error signing nonce:', error);
+        console.error('Error fetching nonce:', error);
       }
-    } catch (error) {
-      console.error('Error fetching nonce:', error);
     }
   };
 
@@ -95,12 +155,14 @@ export default function HeroSection() {
             It's a platform designed to foster meaningful connections and spark discussions within
             groups focused on shared passions.
           </p>
-          <Button className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black">
-            {'Make Community'}
+          <Button
+            onClick={signInWithEth}
+            className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black"
+          >
+            {walletAddress ? 'Make Community' : 'Connect wallet'}
 
             <MoveRight className="h-4 ml-2" />
           </Button>
-          <Button onClick={signInWithEth}>Hello</Button>
         </div>
         {/* <div
           aria-hidden="true"

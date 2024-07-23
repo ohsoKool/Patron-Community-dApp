@@ -6,10 +6,8 @@ import { recoverPersonalSignature } from 'eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 import { getNounceByWalletAddress } from '../helpers/nounce.helper';
 
-export const getNounce = async (req: Request, res: Response) => {
+export const createNounce = async (req: Request, res: Response) => {
     const { walletAddress } = req.query;
-
-    console.log('WALLET ADDRESS: ', walletAddress);
 
     const nounce = cuid();
 
@@ -52,9 +50,6 @@ export const verifyNounce = async (req: Request, res: Response) => {
         sig: String(signedNounce),
     });
 
-    console.log('WALLET ADDRESS: ', walletAddress);
-    console.log('VERIFIED WALLET ADDRESS: ', verifiedWalletAddress);
-
     if (verifiedWalletAddress === String(walletAddress)) {
         return res.status(200).json(
             new ApiResponse(
@@ -75,5 +70,76 @@ export const verifyNounce = async (req: Request, res: Response) => {
                 'Nounce verification failed'
             )
         );
+    }
+};
+
+export const checkIfWalletAddressExists = async (
+    req: Request,
+    res: Response
+) => {
+    const { walletAddress } = req.query;
+
+    try {
+        const response = await db.nounce.findUnique({
+            where: {
+                walletAddress: String(walletAddress),
+            },
+        });
+
+        console.log('RESPONSE: ', response);
+
+        if (response?.walletAddress === String(walletAddress)) {
+            return res.status(200).json(
+                new ApiResponse(
+                    200,
+                    {
+                        message: true,
+                    },
+                    'Wallet address exists in database'
+                )
+            );
+        } else {
+            return res.status(200).json(
+                new ApiResponse(
+                    200,
+                    {
+                        message: false,
+                    },
+                    'Wallet address does not exist in database'
+                )
+            );
+        }
+    } catch (error) {
+        console.log(
+            'GET WALLET ADDRESS : NOUNCE CONTROLLER : Failed to check wallet address in db'
+        );
+    }
+};
+
+export const getNounceByWallet = async (req: Request, res: Response) => {
+    const { walletAddress } = req.query;
+
+    const nounce = await getNounceByWalletAddress(String(walletAddress));
+
+    if (nounce) {
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    nounce,
+                },
+                'Nounce retrieved successfully'
+            )
+        );
+    } else {
+        return res
+            .status(404)
+            .json(
+                new ApiResponse(
+                    404,
+                    {},
+                    'Nounce not found for the provided wallet address'
+                )
+            );
     }
 };

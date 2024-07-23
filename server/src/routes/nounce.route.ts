@@ -1,8 +1,19 @@
 import { Router } from 'express';
-import { getNounce, verifyNounce } from '../controllers/nounce.controller';
+import {
+    checkIfWalletAddressExists,
+    createNounce,
+    getNounceByWallet,
+    verifyNounce,
+} from '../controllers/nounce.controller';
 
 export const nounceRouter = Router();
 
-nounceRouter.route('/get-nounce').get(getNounce);
+nounceRouter.route('/create-nounce').get(createNounce);
 
 nounceRouter.route('/verify-nounce').get(verifyNounce);
+
+nounceRouter
+    .route('/check-walletAddress-exists')
+    .get(checkIfWalletAddressExists);
+
+nounceRouter.route('/get-nounce').get(getNounceByWallet);
