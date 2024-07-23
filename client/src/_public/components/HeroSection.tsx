@@ -3,32 +3,69 @@ import { MoveRight } from 'lucide-react';
 import BlurIn from '@/components/magicui/blur-in';
 import NavBar from '@/_public/components/NavBar';
 import Display from '@/_public/components/Display';
-import { useNavigate } from 'react-router-dom';
-import useWalletStore from '@/lib/zustand/WalletStore';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Web3 from 'web3';
+
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 export default function HeroSection() {
-  const navigate = useNavigate();
-  const { setWalletAddress, isConnected } = useWalletStore();
+  const [walletAddress, setWalletAddress] = useState<string>('');
 
-  const connectWallet = async () => {
-    if (isConnected) {
-      navigate('/all-groups');
-    } else {
-      try {
-        if (window.ethereum) {
-          const accounts = await window.ethereum.request!({
-            method: 'eth_requestAccounts',
-          });
-
-          if (Array.isArray(accounts) && accounts.length > 0) {
-            const account = accounts[0];
-            setWalletAddress(account);
-            navigate('/all-groups');
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then((response) => {
+          if (Array.isArray(response) && response.length > 0) {
+            setWalletAddress(response[0]);
           }
-        }
-      } catch (error) {
-        alert('PLEASE INSTALL META MASK');
+        })
+        .catch((error: any) => {
+          console.error('Error requesting Ethereum accounts:', error);
+        });
+    }
+  }, []);
+
+  const web3 = new Web3(window.ethereum);
+
+  const signInWithEth = async () => {
+    if (!walletAddress) {
+      console.error('No wallet address found.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${serverUrl}/nounce/get-nounce`, {
+        params: { walletAddress },
+      });
+
+      const nonce = response.data.data.nounce;
+      console.log('NONCE: ', nonce);
+
+      if (typeof nonce !== 'string') {
+        console.error('Nonce is not a string:', nonce);
+        return;
       }
+
+      try {
+        const signedNonce = await web3.eth.personal.sign(
+          nonce,
+          walletAddress,
+          '' // MetaMask will handle the signing
+        );
+        console.log('SIGNED NONCE: ', signedNonce);
+
+        const response1 = await axios.get(`${serverUrl}/nounce/verify-nounce`, {
+          params: { walletAddress, signedNonce },
+        });
+
+        console.log('VERIFIED RESPONSE: ', response1);
+      } catch (error) {
+        console.error('Error signing nonce:', error);
+      }
+    } catch (error) {
+      console.error('Error fetching nonce:', error);
     }
   };
 
@@ -58,14 +95,12 @@ export default function HeroSection() {
             It's a platform designed to foster meaningful connections and spark discussions within
             groups focused on shared passions.
           </p>
-          <Button
-            onClick={connectWallet}
-            className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black"
-          >
-            {isConnected ? 'Make Community' : 'Connect your wallet'}
+          <Button className="cursor-pointer h-7 md:h-9 bg-PATRON_TEXT_WHITE_SECONDARY hover:bg-PATRON_TEXT_WHITE_PRIMARY mt-4 md:mt-8 mx-auto text-black">
+            {'Make Community'}
 
             <MoveRight className="h-4 ml-2" />
           </Button>
+          <Button onClick={signInWithEth}>Hello</Button>
         </div>
         {/* <div
           aria-hidden="true"
