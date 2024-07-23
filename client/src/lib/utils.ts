@@ -19,3 +19,18 @@ export function getRandomNumber(min: number, max: number): number {
 
   return randomNumber;
 }
+
+export const getWalletAddressFromWindow = async () => {
+  if (window.ethereum) {
+    window.ethereum
+      .request({ method: 'eth_requestAccounts' })
+      .then((response) => {
+        if (Array.isArray(response) && response.length > 0) {
+          return response[0];
+        }
+      })
+      .catch((error: any) => {
+        console.error('Error requesting Ethereum accounts:', error);
+      });
+  }
+};
