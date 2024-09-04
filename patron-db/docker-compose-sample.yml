@@ -9,9 +9,9 @@ services:
       - 5432:5432 # make sure you don't have another container running on 5432
 
     environment:
-      - POSTGRES_DB= sampleDB
-      - POSTGRES_USER= sampleDBuser
-      - POSTGRES_PASSWORD= sampleDBpassword
+      - POSTGRES_DB=sampleDB
+      - POSTGRES_USER=sampleDBuser
+      - POSTGRES_PASSWORD=sampleDBpassword
 
   adminer:
     image: adminer

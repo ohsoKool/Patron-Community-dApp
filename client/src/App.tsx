@@ -8,26 +8,33 @@ import NotFoundPage from '@/_public/pages/NotFoundPage';
 import HomePage from '@/_root/pages/HomePage';
 import AllGroups from '@/_root/pages/AllGroups';
 import CreateGroup from '@/_root/pages/CreateGroup';
+import { QueryProvider } from './lib/query/QueryProvider';
+import Profile from './_root/pages/Profile';
+import { Toaster } from '@/components/ui/toaster';
 
 function App() {
   return (
     <>
-      <section className="w-full flex flex-col justify-center items-center font-fira-code">
-        <Routes>
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<LandingPage />} />
-          </Route>
-          <Route element={<AuthLayout />}>
-            <Route index path="/auth" element={<Web3Auth />} />
-          </Route>
-          <Route element={<RootLayout />}>
-            <Route path="/all-groups" element={<AllGroups />} />
-            <Route path="/create-group" element={<CreateGroup />} />
-            <Route path="/test/home" element={<HomePage />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </section>
+      <QueryProvider>
+        <section className="w-full flex flex-col justify-center items-center font-fira-code">
+          <Routes>
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<LandingPage />} />
+            </Route>
+            <Route element={<AuthLayout />}>
+              <Route index path="/auth" element={<Web3Auth />} />
+            </Route>
+            <Route element={<RootLayout />}>
+              <Route path="/all-groups" element={<AllGroups />} />
+              <Route path="/create-group" element={<CreateGroup />} />
+              <Route path="/test/home" element={<HomePage />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+          <Toaster />
+        </section>
+      </QueryProvider>
     </>
   );
 }

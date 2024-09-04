@@ -1,8 +1,7 @@
 export interface AddUserToDbType {
-  name: string;
-  address: string;
+    address: string;
 }
 
 export interface GetDataMethodType {
-  message: boolean;
+    message: boolean;
 }

@@ -168,13 +168,18 @@ export const deletedGroup = async (req: Request, res: Response) => {
 };
 
 export const getAllGroups = async (req: Request, res: Response) => {
-    const { limit, pageNo } = req.query;
-
-    const skip = (Number(pageNo) - 1) * Number(limit);
+    const skip = (Number(1) - 1) * Number(10);
 
     const allGroups = await db.group.findMany({
         skip,
-        take: Number(limit),
+        take: 10,
+        select: {
+            groupCoverImage: true,
+            groupName: true,
+            groupDescription: true,
+            createdAt: true,
+            members: true,
+        },
     });
 
     if (!allGroups) {

@@ -1,4 +1,4 @@
-import NavBar from '@/_public/components/NavBar';
+import NavBar from '@/components/shared/NavBar';
 import { Badge } from '@/components/ui/badge';
 import {
   Breadcrumb,
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { getRandomNumber } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import GroupGrid from '@/_root/components/GroupGrid';
+import GroupGrid from '@/components/root/GroupGrid';
 
 const AllGroups = () => {
   const { pathname } = useLocation();

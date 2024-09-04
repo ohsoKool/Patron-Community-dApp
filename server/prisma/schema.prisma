@@ -13,10 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Nounce{
-  id String @id @default(cuid())
+model Nounce {
+  id            String @id @default(cuid())
   walletAddress String @unique
-  nounce String @unique
+  nounce        String @unique
 
   @@map("nounce")
 }
@@ -27,26 +27,27 @@ model User {
   address   String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  image     String?  @default("https://i.pinimg.com/564x/9b/b0/66/9bb066864b0d225c324551ee2c83125d.jpg")
 
-  ownerOf  Group[]
-  memberof  GroupUser[]
-  posts Post[] @relation(name: "ownership")
-  solvedPosts Post[] @relation(name: "userWhoSolved")
-  comments Comment[]
+  ownerOf     Group[]
+  memberof    GroupUser[]
+  posts       Post[]      @relation(name: "ownership")
+  solvedPosts Post[]      @relation(name: "userWhoSolved")
+  comments    Comment[]
 
   @@map("users")
 }
 
 model Group {
-  id        String      @id @default(cuid())
-  groupName String
+  id               String @id @default(cuid())
+  groupName        String
   groupDescription String
-  groupCoverImage String
-  ownerId String
-  owner     User     @relation(fields: [ownerId], references: [id])
+  groupCoverImage  String
+  ownerId          String
+  owner            User   @relation(fields: [ownerId], references: [id])
 
-  members   GroupUser[] 
-  posts Post[]
+  members GroupUser[]
+  posts   Post[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,28 +56,28 @@ model Group {
 }
 
 model GroupUser {
-  id      String      @id @default(cuid())
-  groupId String  @unique
-  userId  String  @unique
-  group   Group    @relation(fields: [groupId], references: [id])
-  user    User     @relation(fields: [userId], references: [id])
+  id      String @id @default(cuid())
+  groupId String @unique
+  userId  String @unique
+  group   Group  @relation(fields: [groupId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
 
   @@map("group_users")
 }
 
 model Post {
-  id String @id @default(cuid())
-  postImage String?
-  postTitle String
+  id              String  @id @default(cuid())
+  postImage       String?
+  postTitle       String
   postDescription String
-  ownerId String
-  onwner User @relation(fields: [ownerId] , references: [id] , name: "ownership")
-  groupId String
-  group Group @relation(fields: [groupId] , references: [id])
+  ownerId         String
+  onwner          User    @relation(fields: [ownerId], references: [id], name: "ownership")
+  groupId         String
+  group           Group   @relation(fields: [groupId], references: [id])
 
   whoSolvedId String?
-  whoSolved User? @relation(fields: [whoSolvedId] , references: [id],name: "userWhoSolved")
-  isSolved Boolean @default(false)
+  whoSolved   User?   @relation(fields: [whoSolvedId], references: [id], name: "userWhoSolved")
+  isSolved    Boolean @default(false)
 
   comment Comment[]
 
@@ -87,11 +88,11 @@ model Post {
 }
 
 model Comment {
-  id String @id @default(cuid())
+  id      String @id @default(cuid())
   ownerId String
-  owner User @relation(fields: [ownerId], references: [id])
-  postId String
-  post Post @relation(fields: [postId], references: [id])
+  owner   User   @relation(fields: [ownerId], references: [id])
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id])
 
   @@map("comments")
 }

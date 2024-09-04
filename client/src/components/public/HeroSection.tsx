@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import BlurIn from '@/components/magicui/blur-in';
-import NavBar from '@/_public/components/NavBar';
-import Display from '@/_public/components/Display';
+import NavBar from '@/components/shared/NavBar';
+import Display from '@/components/public/Display';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Web3 from 'web3';
@@ -10,6 +10,9 @@ import { getItemWithExpiry, setItemWithExpiry } from '@/lib/localStorage';
 import { useNavigate } from 'react-router-dom';
 import useWalletStore from '@/lib/zustand/WalletStore';
 import { hexlify } from 'ethers';
+import { useAddUserToDb } from '@/lib/query/query';
+import { useToast } from '@/hooks/use-toast';
+import { checkIfUserExists } from '@/lib/api';
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -17,6 +20,7 @@ const ONE_DAY = 24 * 60 * 60 * 1000; // One day in milliseconds
 // const ONE_WEEK = 7 * ONE_DAY; // One week in milliseconds
 
 export default function HeroSection() {
+  const { toast } = useToast();
   const [walletAddress, setWalletAddress] = useState<string>('');
   const navigate = useNavigate();
   const { setWalletAddress: setGlobalWalletAddress } = useWalletStore();
@@ -26,10 +30,13 @@ export default function HeroSection() {
     if (storedWalletAddress) {
       setWalletAddress(storedWalletAddress);
       setGlobalWalletAddress(storedWalletAddress);
+      console.log('YES');
     }
-  }, []);
+  }, [walletAddress]);
 
   const web3 = new Web3(window.ethereum);
+
+  const { mutateAsync: addUserToDb } = useAddUserToDb();
 
   const signInWithEth = async () => {
     if (walletAddress) {
@@ -39,16 +46,12 @@ export default function HeroSection() {
       // GETTING WALLET ADDRESS
 
       if (window.ethereum) {
-        console.log('THIS BLOCK EXECUTED');
         await window.ethereum
           .request({ method: 'eth_requestAccounts' })
           .then((response) => {
             if (Array.isArray(response) && response.length > 0) {
-              console.log('FETCHING WALLET ADDRESS: ', response[0]);
               setWalletAddress(response[0]);
-              console.log('STATE WALLET ADDRES: ', walletAddress);
               setItemWithExpiry('walletAddress', response[0], ONE_DAY);
-              console.log('LOCAL WALLET ADDRESS:', localStorage.getItem('walletAddress'));
             }
           })
           .catch((error: any) => {
@@ -63,9 +66,8 @@ export default function HeroSection() {
 
       //CREATING AND VERIFYING NOUNCE
       try {
-        const localStorageObject = JSON.parse(localStorage.getItem('walletAddress')!);
-        const { value } = localStorageObject;
-        console.log('LOCAL STORAGE OBJECT VALUE:  ', value);
+        const { value } = JSON.parse(localStorage.getItem('walletAddress')!);
+
         const checkResponse = await axios.get(`${serverUrl}/nounce/check-walletAddress-exists`, {
           params: { walletAddress: value },
         });
@@ -80,50 +82,67 @@ export default function HeroSection() {
           });
 
           if (createResponse.data.data.nounce) {
-            console.log('CREATE RESPONSE: ', createResponse.data.data.nounce);
             nounce = createResponse.data.data.nounce;
           }
         } else {
-          const GetResponse = await axios.get(`${serverUrl}/nounce/get-nounce`, {
+          const getResponse = await axios.get(`${serverUrl}/nounce/get-nounce`, {
             params: { walletAddress: value },
           });
 
-          if (GetResponse.data.data.nounce) {
-            console.log('GET RESPONSE: ', GetResponse.data.data.nounce);
-            nounce = GetResponse.data.data.nounce;
+          if (getResponse.data.data.nounce) {
+            nounce = getResponse.data.data.nounce;
           }
         }
-
-        console.log('NONCE: ', nounce!);
 
         if (typeof nounce! !== 'string') {
           console.error('Nonce is not a string:', nounce!);
           return;
         }
 
-        console.log('SIGNING NOUNCE');
-
         const bytes = new TextEncoder().encode(nounce);
 
-        console.log('HEXSTRING: ', bytes);
-
         const signedNounce = await web3.eth.personal.sign(hexlify(bytes), value, '');
-
-        console.log('SIGNED NONCE: ', signedNounce);
 
         const verifiedResponse = await axios.get(`${serverUrl}/nounce/verify-nounce`, {
           params: { walletAddress: value, signedNounce },
         });
 
-        console.log('VERIFIED RESPONSE: ', verifiedResponse.data.data.message);
-
         if (verifiedResponse.data.data.message) {
           setGlobalWalletAddress(value);
+          setWalletAddress(value);
+
+          const userExists = await checkIfUserExists(value);
+
+          if (!userExists) {
+            const newUser = await addUserToDb(value);
+
+            if (newUser) {
+              toast({
+                title: `Account successfully created`,
+                description: `Account with name ${newUser.name} created successfully`,
+                variant: 'default',
+              });
+            } else {
+              toast({
+                title: `Account already exists`,
+                description: `Account already exists`,
+                variant: 'destructive',
+              });
+            }
+          } else {
+            toast({
+              title: `Welcome back!`,
+              description: `Welcome back to Patron`,
+              variant: 'default',
+            });
+          }
+
           navigate('/all-groups');
         } else {
           alert('SOMETHING WENT WRONG');
         }
       } catch (error) {
+        alert('Server maynot be responding');
         console.error('Error fetching nonce:', error);
       }
     }
@@ -131,7 +150,7 @@ export default function HeroSection() {
 
   return (
     <div className="bg-PATRON_BLACK z-10">
-      <NavBar />
+      <NavBar showAddress />
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
           aria-hidden="true"

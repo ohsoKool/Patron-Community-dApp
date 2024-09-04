@@ -26,8 +26,10 @@ const getItemWithExpiry = (key: string): string | null => {
   return item.value;
 };
 
-const removeItem = (key: string) => {
+const removeItem = (key: string): boolean => {
   localStorage.removeItem(key);
+
+  return true;
 };
 
 export { setItemWithExpiry, getItemWithExpiry, removeItem };

@@ -20,6 +20,7 @@ module.exports = {
       fontFamily: {
         'audio-wide': ["Audiowide", "sans-serif"],
         'fira-code': ["Fira Code"],
+        'changa': ["Changa", 'sans-serif']
       },
       colors: {
 

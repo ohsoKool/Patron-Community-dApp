@@ -1,4 +1,4 @@
-import NavBar from '@/_public/components/NavBar';
+import NavBar from '@/components/shared/NavBar';
 import { createGroupSchema } from '@/lib/schema/schema';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,10 +17,31 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MagicCard } from '@/components/magicui/magic-card';
 import { useNavigate } from 'react-router-dom';
+import PreviewCard from '../../components/root/PreviewCard';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { useCreateGroup, useDisplayImageOnPreview } from '@/lib/query/query';
+import { MoonLoader } from 'react-spinners';
+import useWalletStore from '@/lib/zustand/WalletStore';
+import { useToast } from '@/hooks/use-toast';
 
 const CreateGroup = () => {
+  const { toast } = useToast();
+  const [file, setFile] = useState<File | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState('');
+  const { mutateAsync: displayImageOnPreview, isPending } = useDisplayImageOnPreview();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files ? e.target.files[0] : null);
+  };
+  const handleSubmit = async () => {
+    if (file?.name && file?.type) {
+      const responsePreUrl = await displayImageOnPreview(file);
+      setPreviewImageUrl(responsePreUrl.data.data.url);
+    }
+  };
+
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof createGroupSchema>>({
     resolver: zodResolver(createGroupSchema),
@@ -30,8 +51,33 @@ const CreateGroup = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof createGroupSchema>) {
+  const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroup();
+
+  const { walletAddress } = useWalletStore();
+
+  async function onSubmit(values: z.infer<typeof createGroupSchema>) {
     console.log(values);
+
+    const coverImage = file?.name;
+
+    const response = await createGroup({
+      groupName: values.groupName,
+      groupDescription: values.groupDescription,
+      groupCoverImage: coverImage || '',
+      walletAddress: walletAddress?.toString() || '',
+    });
+
+    if (response?.status === 200) {
+      navigate('/all-groups');
+
+      toast({
+        title: 'Group created successfully',
+      });
+    } else {
+      toast({
+        title: 'Failed to create group',
+      });
+    }
   }
   return (
     <section className="w-full">
@@ -50,38 +96,9 @@ const CreateGroup = () => {
       </div>
 
       <div className="w-full flex flex-col lg:flex-row justify-center items-start">
-        <div className="w-full hidden lg:flex flex-col justify-center items-center py-5">
-          <h1 className="text-xl w-full pb-3 px-10 sm:text-center font-audio-wide border-b border-b-PATRON_BORDER_COLOR">
-            Preview
-          </h1>
-          <div className="flex w-full flex-col items-center py-16">
-            <MagicCard
-              className="cursor-pointer rounded-t-lg bg-PATRON_DARK_GRAY flex-col items-center justify-center  border-PATRON_BORDER_COLOR w-3/5 shadow-2xl shadow-[#84dcff29]"
-              gradientColor={'#1C1C1C'}
-            >
-              <img
-                src="https://res.cloudinary.com/dg946flpg/image/upload/v1721592039/rroaidasasdffromdhdk.png"
-                alt="Display"
-                className="object-cover"
-              />
-              <div className="flex justify-between items-center px-5 py-2">
-                <h1 className="text-xl text-PATRON_TEXT_WHITE_PRIMARY my-2">THIS IS TITLE</h1>
-                <Button className="h-7 text-xs text-rose-400">Join</Button>
-              </div>
-            </MagicCard>
-            <MagicCard
-              className="cursor-pointer rounded-b-lg bg-PATRON_LIGHT_GRAY flex-col items-center justify-center border-PATRON_BORDER_COLOR w-3/5"
-              gradientColor={'#1C1C1C'}
-            >
-              <p className="text-xs py-5 px-3 text-PATRON_TEXT_WHITE_SECONDARY">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam odio consectetur
-                culpa corrupti est debitis minus possimus laboriosam maxime sed?
-              </p>
-            </MagicCard>
-          </div>
-        </div>
+        <PreviewCard imageUrl={previewImageUrl} isPending={isPending} />
 
-        <div className="w-full border-l border-l-PATRON_BORDER_COLOR flex flex-col justify-start items-start py-5">
+        <div className="w-full order-5 h-full border-l lg:border-t-black border-l-PATRON_BORDER_COLOR flex flex-col justify-start items-start py-5">
           <h1 className="text-xl  w-full pb-3 px-10 sm:text-center font-audio-wide border-b border-b-PATRON_BORDER_COLOR">
             Create your own community
           </h1>
@@ -89,7 +106,23 @@ const CreateGroup = () => {
             <Label htmlFor="picture" className="">
               Your community's coverpage
             </Label>
-            <Input id="picture" type="file" className="mt-3" />
+            <div className="flex items-center  mt-3 gap-3">
+              <Input onChange={handleChange} id="picture" type="file" className="w-2/3" />
+              <Button
+                onClick={handleSubmit}
+                className="w-1/3 text-rose-400 flex justify-center items-center"
+              >
+                {isPending ? (
+                  <>
+                    <MoonLoader size={14} color="#fff" />
+                  </>
+                ) : (
+                  <>
+                    <h1>Upload</h1>
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
           <Form {...form}>
             <form
@@ -119,7 +152,7 @@ const CreateGroup = () => {
                   <FormItem>
                     <FormLabel>Your Community's Story</FormLabel>
                     <FormControl>
-                      <Input placeholder="Share your passion!" {...field} />
+                      <Textarea placeholder="Share your passion!" {...field} />
                     </FormControl>
                     <FormDescription className="text-neutral-600">
                       Describe your community's purpose and what makes it special.
@@ -130,7 +163,7 @@ const CreateGroup = () => {
               />
               <div className="flex justify-start items-center gap-4 ">
                 <Button type="submit" className="text-purple-500">
-                  Create Your Community
+                  {isCreating ? <MoonLoader size={14} color="#fff" /> : 'Create Your Community'}
                 </Button>
                 <Button
                   onClick={() => navigate('/all-groups')}

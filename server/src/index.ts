@@ -7,6 +7,7 @@ import { userRouter } from './routes/user.route';
 import { groupRouter } from './routes/group.route';
 import { groupUserRouter } from './routes/groupUser.route';
 import { nounceRouter } from './routes/nounce.route';
+import { s3Router } from './routes/aws.s3.route';
 
 dotenv.config({
     path: '../.env',
@@ -40,6 +41,7 @@ app.use('/patron/api/user', userRouter);
 app.use('/patron/api/group', groupRouter);
 app.use('/patron/api/groupUser', groupUserRouter);
 app.use('/patron/api/nounce', nounceRouter);
+app.use('/patron/api/s3', s3Router);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('WORKING');
