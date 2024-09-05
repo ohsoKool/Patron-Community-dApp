@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   addUserToDb,
+  addUserToGroup,
   changeUserImage,
   changeUserName,
   createGroup,
@@ -8,7 +9,9 @@ import {
   displayImageOnPreview,
   generatePreSignedUrls,
   getAllGroups,
+  getGroupById,
   getUserByAddress,
+  getUserJoinedDate,
 } from '@/lib/api';
 import { ChangeUserImageType, ChangeUserNameType, GroupType } from '@/lib/types';
 
@@ -25,6 +28,8 @@ export const useGeneratePresignedUrl = () => {
     mutationFn: (groups: GroupType[]) => generatePreSignedUrls(groups),
   });
 };
+
+// * USER
 
 export const useAddUserToDb = () => {
   return useMutation({
@@ -67,5 +72,25 @@ export const useCreateGroup = () => {
 export const useGetAllGroups = () => {
   return useMutation({
     mutationFn: () => getAllGroups(),
+  });
+};
+
+export const useAddUserToGroup = () => {
+  return useMutation({
+    mutationFn: ({ groupId, walletAddress }: { groupId: string; walletAddress: string }) =>
+      addUserToGroup({ groupId, walletAddress }),
+  });
+};
+
+export const useGetGroupById = () => {
+  return useMutation({
+    mutationFn: (groupId: string) => getGroupById(groupId),
+  });
+};
+
+export const useGetUserJoinedDate = () => {
+  return useMutation({
+    mutationFn: ({ walletAddress, groupId }: { walletAddress: string; groupId: string }) =>
+      getUserJoinedDate({ walletAddress, groupId }),
   });
 };

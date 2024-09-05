@@ -55,6 +55,15 @@ export const generatePreSignedUrls = async (groups: GroupType[]): Promise<GroupT
   return groupsWithPresignedUrls;
 };
 
+// export const generatePreSignedUrl = async (group: GroupType): Promise<GroupType> => {
+//   const groupsWithPresignedUrl = await Promise.all(() => ({
+//     ...group,
+//     groupCoverImage: await getUrlFromS3ByName(group.groupCoverImage),
+//   }));
+
+//   return groupsWithPresignedUrl;
+// };
+
 type UserToDbReturnType = {
   name: string;
   address: string;
@@ -149,6 +158,48 @@ export const createGroup = async ({
 
 export const getAllGroups = async () => {
   const response = await axios.get(`http://localhost:3000/patron/api/group/get-allGroup`);
+
+  return response.data.data;
+};
+
+export const getGroupById = async (groupId: string) => {
+  const response = await axios.get(
+    `http://localhost:3000/patron/api/group/get-group?groupId=${groupId}`
+  );
+
+  return response.data.data;
+};
+
+//* GROUP USER
+
+export const addUserToGroup = async ({
+  groupId,
+  walletAddress,
+}: {
+  groupId: string;
+  walletAddress: string;
+}) => {
+  const response = await axios.post(
+    `http://localhost:3000/patron/api/groupUser/add-user-to-group?groupId=${groupId}&walletAddress=${walletAddress}`
+  );
+
+  console.log('ADD USER: ', response.data);
+
+  return response.data;
+};
+
+export const getUserJoinedDate = async ({
+  walletAddress,
+  groupId,
+}: {
+  walletAddress: string;
+  groupId: string;
+}) => {
+  const userId = await getUserIdByAddress(walletAddress);
+
+  const response = await axios.get(
+    `http://localhost:3000/patron/api/groupUser/get-joinedDate?userId=${userId}&groupId=${groupId}`
+  );
 
   return response.data.data;
 };

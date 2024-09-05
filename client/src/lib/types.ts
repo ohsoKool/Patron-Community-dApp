@@ -14,4 +14,5 @@ export type GroupType = {
   groupDescription: string;
   createdAt: string | Date;
   members: any[];
+  id: string;
 };
