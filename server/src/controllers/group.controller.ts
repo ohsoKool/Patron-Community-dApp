@@ -179,6 +179,7 @@ export const getAllGroups = async (req: Request, res: Response) => {
             groupDescription: true,
             createdAt: true,
             members: true,
+            id: true,
         },
     });
 
@@ -197,4 +198,47 @@ export const getAllGroups = async (req: Request, res: Response) => {
                 'Successfully retrieved all the groups'
             )
         );
+};
+
+export const getGroupById = async (req: Request, res: Response) => {
+    const { groupId } = req.query;
+
+    console.log('GROUP USER GROUP USER: ', groupId);
+
+    if (!groupId) {
+        throw new ApiError(
+            400,
+            'GET GROUP BY ID : GROUP CONTROLLER : groupId is required'
+        );
+    }
+
+    const group = await db.group.findUnique({
+        where: {
+            id: String(groupId),
+        },
+        select: {
+            groupCoverImage: true,
+            groupName: true,
+            groupDescription: true,
+            createdAt: true,
+            members: true,
+            id: true,
+        },
+    });
+
+    if (!group) {
+        return res
+            .status(404)
+            .json(new ApiResponse(404, {}, 'Group not found'));
+    } else {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    group,
+                    'Successfully retrieved the group by id'
+                )
+            );
+    }
 };

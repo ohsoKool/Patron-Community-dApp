@@ -5,6 +5,7 @@ import {
     editGroupDescription,
     editGroupName,
     getAllGroups,
+    getGroupById,
     uploadImageToCloudinary,
 } from '../controllers/group.controller';
 
@@ -27,3 +28,5 @@ groupRouter
     .patch(editGroupDescription);
 
 groupRouter.route('/get-allGroup').get(getAllGroups);
+
+groupRouter.route('/get-group').get(getGroupById);

@@ -5,9 +5,9 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { db } from '../utils/db';
 
 export const addUserToGroup = async (req: Request, res: Response) => {
-    const { groupId, userId } = req.query;
+    const { groupId, walletAddress } = req.query;
 
-    [groupId, userId].some((each) => {
+    [groupId, walletAddress].some((each) => {
         if (!each) {
             throw new ApiError(
                 400,
@@ -16,14 +16,29 @@ export const addUserToGroup = async (req: Request, res: Response) => {
         }
     });
 
-    const { message } = await getUserInGroup(String(userId), String(groupId));
+    console.log('GROUP ID: ', groupId);
+
+    const user = await db.user.findFirst({
+        where: {
+            address: String(walletAddress),
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    console.log('GROUP ID: ', groupId);
+
+    const { message } = await getUserInGroup(String(user?.id), String(groupId));
+
+    console.log('MESSAGE: ', message);
 
     if (message == true) {
         return res
-            .status(400)
+            .status(200)
             .json(
                 new ApiResponse(
-                    400,
+                    433,
                     {},
                     'User provided already exists in the provided group'
                 )
@@ -33,9 +48,11 @@ export const addUserToGroup = async (req: Request, res: Response) => {
     const addedUser = await db.groupUser.create({
         data: {
             groupId: String(groupId),
-            userId: String(userId),
+            userId: String(user?.id),
         },
     });
+
+    console.log('ADDED USER: ', addedUser);
 
     if (!addedUser) {
         return res
@@ -125,4 +142,47 @@ export const getAllGroupUsers = async (req: Request, res: Response) => {
                 'Successfully retrieved all the users from the group'
             )
         );
+};
+
+export const getUserJoinedDate = async (req: Request, res: Response) => {
+    const { userId, groupId } = req.query;
+
+    if (!userId) {
+        throw new ApiError(
+            400,
+            'GET USER JOINED DATE : GROUP USER CONTROLLER : User ID is required'
+        );
+    }
+
+    const user = await db.groupUser.findFirst({
+        where: {
+            userId: String(userId),
+            groupId: String(groupId),
+        },
+        select: {
+            createdAt: true,
+        },
+    });
+
+    if (!user) {
+        return res
+            .status(404)
+            .json(
+                new ApiResponse(
+                    404,
+                    {},
+                    'User does not exist in the provided group or does not exist at all'
+                )
+            );
+    } else {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    user.createdAt,
+                    'User joined the group on this date'
+                )
+            );
+    }
 };
