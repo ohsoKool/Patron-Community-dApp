@@ -13,32 +13,35 @@ import Profile from '@/_root/pages/Profile';
 import { Toaster } from '@/components/ui/toaster';
 import GroupPage from '@/_root/pages/GroupPage';
 import CreatePost from '@/_root/pages/CreatePost';
+import { ThemeProvider } from '@/components/shared/ThemeProvider';
 
 function App() {
   return (
     <>
       <QueryProvider>
-        <section className="w-full min-h-screen flex flex-col justify-start items-center font-fira-code">
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<LandingPage />} />
-            </Route>
-            <Route element={<AuthLayout />}>
-              <Route index path="/auth" element={<Web3Auth />} />
-            </Route>
-            <Route element={<RootLayout />}>
-              <Route path="/all-groups" element={<AllGroups />} />
-              <Route path="/create-group" element={<CreateGroup />} />
-              <Route path={`/group/:slug`} element={<GroupPage />} />
-              <Route path={`/create-post`} element={<CreatePost />} />
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <section className="w-full min-h-screen flex flex-col justify-start items-center font-fira-code">
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<LandingPage />} />
+              </Route>
+              <Route element={<AuthLayout />}>
+                <Route index path="/auth" element={<Web3Auth />} />
+              </Route>
+              <Route element={<RootLayout />}>
+                <Route path="/all-groups" element={<AllGroups />} />
+                <Route path="/create-group" element={<CreateGroup />} />
+                <Route path={`/group/:slug`} element={<GroupPage />} />
+                <Route path={`/:slug/create-post`} element={<CreatePost />} />
 
-              <Route path="/test/home" element={<HomePage />} />
-              <Route path="/profile" element={<Profile />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-          <Toaster />
-        </section>
+                <Route path="/test/home" element={<HomePage />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+            <Toaster />
+          </section>
+        </ThemeProvider>
       </QueryProvider>
     </>
   );

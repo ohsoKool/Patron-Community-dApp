@@ -6,14 +6,24 @@ import {
   changeUserName,
   createGroup,
   CreateGroupType,
+  createPost,
   displayImageOnPreview,
-  generatePreSignedUrls,
+  generateGroupPreSignedUrl,
+  generateGroupPreSignedUrls,
+  generatePostPreSignedUrls,
   getAllGroups,
   getGroupById,
+  getPostsInGroup,
   getUserByAddress,
   getUserJoinedDate,
 } from '@/lib/api';
-import { ChangeUserImageType, ChangeUserNameType, GroupType } from '@/lib/types';
+import {
+  ChangeUserImageType,
+  ChangeUserNameType,
+  createPostType,
+  GroupType,
+  PostType,
+} from '@/lib/types';
 
 // * AWS S3
 
@@ -23,9 +33,21 @@ export const useDisplayImageOnPreview = () => {
   });
 };
 
-export const useGeneratePresignedUrl = () => {
+export const useGenerateGroupPreSignedUrls = () => {
   return useMutation({
-    mutationFn: (groups: GroupType[]) => generatePreSignedUrls(groups),
+    mutationFn: (groups: GroupType[]) => generateGroupPreSignedUrls(groups),
+  });
+};
+
+export const useGeneratePostPreSignedUrls = () => {
+  return useMutation({
+    mutationFn: (posts: PostType[]) => generatePostPreSignedUrls(posts),
+  });
+};
+
+export const useGenerateGroupPreSignedUrl = () => {
+  return useMutation({
+    mutationFn: (group: GroupType) => generateGroupPreSignedUrl(group),
   });
 };
 
@@ -92,5 +114,32 @@ export const useGetUserJoinedDate = () => {
   return useMutation({
     mutationFn: ({ walletAddress, groupId }: { walletAddress: string; groupId: string }) =>
       getUserJoinedDate({ walletAddress, groupId }),
+  });
+};
+
+// *POST
+
+export const useCreatePost = () => {
+  return useMutation({
+    mutationFn: ({
+      postImage,
+      postTitle,
+      postDescription,
+      walletAddress,
+      groupId,
+    }: createPostType) =>
+      createPost({
+        postImage,
+        postTitle,
+        postDescription,
+        walletAddress,
+        groupId,
+      }),
+  });
+};
+
+export const useGetAllPostsInGroup = () => {
+  return useMutation({
+    mutationFn: (groupId: string) => getPostsInGroup(groupId),
   });
 };

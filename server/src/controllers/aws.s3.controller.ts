@@ -28,7 +28,7 @@ const putObject = async (fileName: string, contentType: string) => {
         ContentType: contentType,
     });
 
-    const url = await getSignedUrl(client, cmd, { expiresIn: 60 * 60 * 24 });
+    const url = await getSignedUrl(client, cmd, { expiresIn: 10 });
 
     return url;
 };
@@ -39,17 +39,13 @@ export const getObject = async (fileName: string) => {
         Key: `patron/${fileName}`,
     });
 
-    const url = await getSignedUrl(client, cmd, { expiresIn: 60 * 60 * 24 });
-
-    console.log('URL : ', url);
+    const url = await getSignedUrl(client, cmd, { expiresIn: 10 });
 
     return url;
 };
 
 export const getPreSignedUrlToUpload = async (req: Request, res: Response) => {
     const { fileName, contentType } = req.query;
-
-    console.log('FILENAME: ', fileName);
 
     [fileName, contentType].some((value) => {
         if (!value) {

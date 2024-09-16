@@ -8,6 +8,7 @@ import { groupRouter } from './routes/group.route';
 import { groupUserRouter } from './routes/groupUser.route';
 import { nounceRouter } from './routes/nounce.route';
 import { s3Router } from './routes/aws.s3.route';
+import { postRouter } from './routes/post.route';
 
 dotenv.config({
     path: '../.env',
@@ -40,6 +41,7 @@ app.use(cookieParser());
 app.use('/patron/api/user', userRouter);
 app.use('/patron/api/group', groupRouter);
 app.use('/patron/api/groupUser', groupUserRouter);
+app.use('/patron/api/post', postRouter);
 app.use('/patron/api/nounce', nounceRouter);
 app.use('/patron/api/s3', s3Router);
 

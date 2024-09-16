@@ -73,44 +73,64 @@ const AllGroups = () => {
         <NavBar showAddress />
       </div>
       <main className="flex h-full flex-col md:flex-row w-full justify-center items-center">
-        <div className="w-full h-full md:w-2/12 md:border-r md:border-r-PATRON_BORDER_COLOR">
+        <div
+          className="w-full h-full md:w-2/12 md:border-r 
+        md:border-neutral-300 md:dark:border-r-PATRON_BORDER_COLOR"
+        >
           <li className="list-none">
-            <div className="flex justify-between pr-10 border-b border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
-              <h1 className="text-lg">MENU</h1>
+            <div
+              className="flex justify-between pr-10 border-b 
+            border-neutral-300 dark:border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5"
+            >
+              <h1 className="text-lg text-neutral-700 dark:text-PATRON_TEXT_WHITE_SECONDARY">
+                MENU
+              </h1>
               <Button
+                variant={'patron'}
                 onClick={() => navigate('/create-group')}
                 className="h-7 text-sm text-rose-400 md:hidden"
               >
                 Create
               </Button>
             </div>
-            <div className="flex flex-row md:flex-col justify-start items-center md:justify-center md:items-start gap-3 px-4 py-3 md:py-7 border-b border-b-PATRON_BORDER_COLOR">
+            <div className="flex flex-row md:flex-col justify-start items-center md:justify-center md:items-start gap-3 px-4 py-3 md:py-7 border-b border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR">
               {menuObject.map((each) => (
-                <Badge key={each.label} className={`${each.color} cursor-pointer md:w-32 md:h-7`}>
+                <Badge
+                  variant={'patron'}
+                  key={each.label}
+                  className={`${each.color} cursor-pointer md:w-32 md:h-7`}
+                >
                   {each.label}
                 </Badge>
               ))}
             </div>
           </li>
           <li className="list-none hidden md:block">
-            <div className="border-b border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
+            <div className="border-b border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
               <h1 className="text-lg">TAGS</h1>
             </div>
-            <div className="flex flex-row flex-wrap justify-start items-center gap-3 px-4 py-3 border-b border-b-PATRON_BORDER_COLOR md:py-7">
+            <div className="flex flex-row flex-wrap justify-start items-center gap-3 px-4 py-3 border-b border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR md:py-7">
               {tagObject.map((each) => (
-                <Badge key={each.label} className={`${each.color} cursor-pointer h-7`}>
+                <Badge
+                  variant={'patron'}
+                  key={each.label}
+                  className={`${each.color} cursor-pointer h-7`}
+                >
                   {each.label}
                 </Badge>
               ))}
             </div>
           </li>
           <li className="list-none hidden md:block">
-            <div className="border-b border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
-              <h1 className="text-lg text-PATRON_TEXT_WHITE_PRIMARY">CREATE A COMMUTIY</h1>
+            <div className="border-b border-neutral-300 dark:border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
+              <h1 className="text-lg text-neutral-800 dark:text-PATRON_TEXT_WHITE_PRIMARY">
+                CREATE A COMMUTIY
+              </h1>
             </div>
-            <div className="pb-10 py-3 flex flex-row flex-wrap justify-start items-center gap-3 px-4 border-b border-b-PATRON_BORDER_COLOR">
+            <div className="pb-10 py-3 flex flex-row flex-wrap justify-start items-center gap-3 px-4 border-b border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR">
               <p className="text-xs">Have ideas in mind ? Want to create your community?</p>
               <Button
+                variant={'patron'}
                 onClick={() => navigate('/create-group')}
                 className="h-7 text-sm text-rose-400"
               >
@@ -120,8 +140,8 @@ const AllGroups = () => {
           </li>
         </div>
         <div className="w-full h-full md:w-10/12 md:px-10">
-          <div className="flex w-full sm:w-5/6 md:w-4/5 lg:w-7/12 pr-10 border-b items-center gap-10 border-b-PATRON_BORDER_COLOR pt-4 pb-1">
-            <h1 className="text-md sm:text-lg ml-5 text-white">All Groups</h1>
+          <div className="flex w-full sm:w-5/6 md:w-4/5 lg:w-7/12 pr-10 border-b items-center gap-10 border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR pt-4 pb-1">
+            <h1 className="text-md sm:text-lg ml-5 text-neutral-700 dark:text-white">All Groups</h1>
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>

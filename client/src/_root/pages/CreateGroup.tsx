@@ -56,8 +56,6 @@ const CreateGroup = () => {
   const { walletAddress } = useWalletStore();
 
   async function onSubmit(values: z.infer<typeof createGroupSchema>) {
-    console.log(values);
-
     const coverImage = file?.name;
 
     const response = await createGroup({
