@@ -16,8 +16,6 @@ export const addUserToGroup = async (req: Request, res: Response) => {
         }
     });
 
-    console.log('GROUP ID: ', groupId);
-
     const user = await db.user.findFirst({
         where: {
             address: String(walletAddress),
@@ -26,8 +24,6 @@ export const addUserToGroup = async (req: Request, res: Response) => {
             id: true,
         },
     });
-
-    console.log('GROUP ID: ', groupId);
 
     const { message } = await getUserInGroup(String(user?.id), String(groupId));
 
@@ -45,14 +41,19 @@ export const addUserToGroup = async (req: Request, res: Response) => {
             );
     }
 
+    // const addedUser = await db.groupUser.create({
+    //     data: {
+    //         groupId: String(groupId),
+    //         userId: String(user?.id),
+    //     },
+    // });
+
     const addedUser = await db.groupUser.create({
         data: {
             groupId: String(groupId),
             userId: String(user?.id),
         },
     });
-
-    console.log('ADDED USER: ', addedUser);
 
     if (!addedUser) {
         return res
@@ -180,7 +181,7 @@ export const getUserJoinedDate = async (req: Request, res: Response) => {
             .json(
                 new ApiResponse(
                     200,
-                    user.createdAt,
+                    user.createdAt ? user.createdAt : '',
                     'User joined the group on this date'
                 )
             );

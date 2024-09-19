@@ -1,4 +1,8 @@
-import { useAddUserToGroup, useGeneratePresignedUrl, useGetAllGroups } from '@/lib/query/query';
+import {
+  useAddUserToGroup,
+  useGenerateGroupPreSignedUrls,
+  useGetAllGroups,
+} from '@/lib/query/query';
 import { useEffect, useState } from 'react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
@@ -10,7 +14,6 @@ import useWalletStore from '@/lib/zustand/WalletStore';
 import { useToast } from '@/hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-import { generatePreSignedUrls } from '@/lib/api';
 
 const BORDER_COLORS = [
   'text-PATRON_CYAN',
@@ -22,7 +25,8 @@ const BORDER_COLORS = [
 const GroupGrid = () => {
   const [groups, setGroups] = useState<GroupType[] | null>(null);
   const { mutateAsync: getAllGroups, isPending: isGetting } = useGetAllGroups();
-  const { isPending: isGenerating } = useGeneratePresignedUrl();
+  const { mutateAsync: generatePreSignedUrls, isPending: isGenerating } =
+    useGenerateGroupPreSignedUrls();
   const { walletAddress } = useWalletStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -43,8 +47,6 @@ const GroupGrid = () => {
       groupId: groupId,
       walletAddress: walletAddress?.toString()!,
     });
-
-    console.log('RESPONSE: ', response);
 
     if (response.statusCode === 200) {
       navigate(`/group/${groupId}`);
@@ -75,7 +77,7 @@ const GroupGrid = () => {
             <li
               key={each.groupDescription}
               className={
-                'cursor-pointer flex rounded-lg bg-PATRON_DARK_GRAY flex-col items-center justify-start border border-PATRON_BORDER_COLOR'
+                'cursor-pointer flex rounded-lg bg-neutral-100 dark:bg-PATRON_DARK_GRAY flex-col items-center justify-start border border-b-neutral-300 dark:border-PATRON_BORDER_COLOR'
               }
               onClick={() => {
                 navigate(`/group/${each.id}`);
@@ -96,12 +98,13 @@ const GroupGrid = () => {
                 )}
               </AspectRatio>
               <div className="flex items-center justify-between w-full px-3">
-                <h2 className=" w-full text-start text-xl font-changa font-medium py-2 mt-1 text-PATRON_TEXT_WHITE_PRIMARY">
+                <h2 className=" w-full text-start text-xl font-changa font-medium py-2 mt-1 text-neutral-700 dark:text-PATRON_TEXT_WHITE_PRIMARY">
                   {each.groupName}
                 </h2>
                 <Button
+                  variant={'patron'}
                   className={
-                    'h-5 w-16 text-[10px] bg-PATRON_BLACK font-medium ' +
+                    'h-5 w-16 text-[10px]  font-medium ' +
                     BORDER_COLORS[Number(each.groupDescription.length % 3)]
                   }
                   onClick={() => handleJoin(each.id)}
@@ -109,17 +112,20 @@ const GroupGrid = () => {
                   Join
                 </Button>
               </div>
-              <DropdownMenuSeparator className="bg-PATRON_BORDER_COLOR w-full" />
-              <p className="text-xs text-PATRON_TEXT_WHITE_SECONDARY/60 text-start p-2">
+              <DropdownMenuSeparator className="bg-neutral-300 dark:bg-PATRON_BORDER_COLOR w-full" />
+              <p className="text-xs text-neutral-500 dark:text-PATRON_TEXT_WHITE_SECONDARY/60 text-start p-2">
                 {each.groupDescription.slice(0, 100) + '....'}
               </p>
-              <DropdownMenuSeparator className="bg-PATRON_BORDER_COLOR" />
+              <DropdownMenuSeparator className="bg-neutral-300 dark:bg-PATRON_BORDER_COLOR" />
               <div className="w-full flex items-center p-3">
-                <p className="text-sm text-PATRON_TEXT_WHITE_SECONDARY/60 text-start py-2 w-full">
+                <p
+                  onClick={() => console.log('HELLO : ', each.members?.length)}
+                  className="text-sm text-neutral-600 dark:text-PATRON_TEXT_WHITE_SECONDARY/60 text-start py-2 w-full"
+                >
                   {each.members?.length} Members
                 </p>
                 <Link to={`/group/${each.id}`}>
-                  <ExternalLink color="#fff" size={17} className="ml-3" />
+                  <ExternalLink color="#808080" size={17} className="ml-3" />
                 </Link>
               </div>
             </li>

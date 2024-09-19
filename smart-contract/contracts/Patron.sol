@@ -9,6 +9,7 @@ contract Social {
     string groupCoverImageUrl;
     string groupDescription;
     address groupOwnerAddress;
+    string ownerAddress;
     string groupId;
   }
 
@@ -33,6 +34,7 @@ contract Social {
     string memory _groupTitle,
     string memory _groupCoverImageUrl,
     string memory _groupDescription,
+    string memory _ownerAddress,
     string memory _groupId
   ) payable public  {
     require(msg.value == 5000000, "Not enought eth");
@@ -41,7 +43,8 @@ contract Social {
       groupCoverImageUrl: _groupCoverImageUrl,
       groupDescription: _groupDescription,
       groupOwnerAddress: msg.sender,
-      groupId: _groupId
+      ownerAddress: _ownerAddress,
+      groupId : _groupId
     });
 
   }

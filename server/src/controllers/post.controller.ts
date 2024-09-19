@@ -16,6 +16,8 @@ export const createPost = async (req: Request, res: Response) => {
         }
     });
 
+    console.log('USERID: ', ownerId);
+
     const newPost = await db.post.create({
         data: {
             postTitle,
@@ -93,9 +95,9 @@ export const togglePostSolved = async (req: Request, res: Response) => {
 };
 
 export const getAllPostsInGroup = async (req: Request, res: Response) => {
-    const { limit, pageNo, groupId } = req.query;
+    const { groupId } = req.query;
 
-    const skip = (Number(pageNo) - 1) * Number(limit);
+    const skip = 0;
 
     if (!groupId) {
         throw new ApiError(400, 'groupId is required');
@@ -105,8 +107,20 @@ export const getAllPostsInGroup = async (req: Request, res: Response) => {
         where: {
             groupId: String(groupId),
         },
+        select: {
+            postImage: true,
+            postDescription: true,
+            postTitle: true,
+            createdAt: true,
+            onwner: {
+                select: {
+                    name: true,
+                    image: true,
+                },
+            },
+        },
         skip,
-        take: Number(limit),
+        take: Number(10),
     });
 
     if (!allPostsInGroup) {

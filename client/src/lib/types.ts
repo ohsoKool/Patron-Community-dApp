@@ -16,3 +16,22 @@ export type GroupType = {
   members: any[];
   id: string;
 };
+
+export type createPostType = {
+  postImage: string;
+  postTitle: string;
+  postDescription: string;
+  walletAddress: string;
+  groupId: string;
+};
+
+export type PostType = {
+  postImage: string;
+  postDescription: string;
+  postTitle: string;
+  createdAt: Date;
+  onwner: {
+    name: string;
+    image: string;
+  };
+};

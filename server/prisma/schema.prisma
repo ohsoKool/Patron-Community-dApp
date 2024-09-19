@@ -31,9 +31,9 @@ model User {
 
   ownerOf     Group[]
   memberof    GroupUser[]
-  posts       Post[]       @relation(name: "ownership")
+  posts       Post[]      @relation(name: "ownership")
+  solvedPosts Post[]      @relation(name: "userWhoSolved")
   comments    Comment[]
-  solvedPosts BountyPost[] @relation(name: "userWhoSolved")
 
   @@map("users")
 }
@@ -59,8 +59,12 @@ model GroupUser {
   id      String @id @default(cuid())
   groupId String @unique
   userId  String @unique
-  group   Group  @relation(fields: [groupId], references: [id])
-  user    User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
 
   @@map("group_users")
 }
@@ -75,24 +79,16 @@ model Post {
   groupId         String
   group           Group   @relation(fields: [groupId], references: [id])
 
+  whoSolvedId String?
+  whoSolved   User?   @relation(fields: [whoSolvedId], references: [id], name: "userWhoSolved")
+  isSolved    Boolean @default(false)
+
   comment Comment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("posts")
-}
-
-model BountyPost {
-  id String @id @default(cuid())
-
-  bountyAmount Float
-
-  whoSolvedId String?
-  whoSolved   User?   @relation(fields: [whoSolvedId], references: [id], name: "userWhoSolved")
-  isSolved    Boolean @default(false)
-
-  @@map("bounty_posts")
 }
 
 model Comment {

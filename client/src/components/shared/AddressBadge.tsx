@@ -14,7 +14,7 @@ const AddressBadge = ({
     <Badge
       variant={'secondary'}
       className={cn(
-        'h-6 ml-1 border-PATRON_BORDER_COLOR cursor-pointer bg-PATRON_LIGHT_GRAY text-PATRON_TEXT_WHITE_SECONDARY hover:text-PATRON_TEXT_WHITE_PRIMARY ',
+        'h-6 ml-1 border-neutral-300 dark:border-PATRON_BORDER_COLOR cursor-pointer bg-neutral-200 dark:bg-PATRON_LIGHT_GRAY dark:text-PATRON_TEXT_WHITE_SECONDARY dark:hover:text-PATRON_TEXT_WHITE_PRIMARY ',
         className
       )}
     >
