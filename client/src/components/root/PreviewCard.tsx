@@ -6,13 +6,13 @@ const PreviewCard = ({ imageUrl, isPending }: { imageUrl?: string; isPending?: b
   console.log(imageUrl);
   console.log(isPending);
   return (
-    <div className="w-full order-6 border-t border-t-PATRON_BORDER_COLOR lg:order-3 flex flex-col justify-center items-center py-5 h-full">
-      <h1 className="text-xl w-full pb-3 px-10 sm:text-center font-audio-wide border-b border-b-PATRON_BORDER_COLOR">
+    <div className="w-full order-6 border-t dark:border-t-PATRON_BORDER_COLOR lg:order-3 flex flex-col justify-center items-center py-5 h-full">
+      <h1 className="text-xl w-full pb-3 px-10 sm:text-center font-audio-wide border-b dark:border-b-PATRON_BORDER_COLOR">
         Preview
       </h1>
       <div className="flex w-full flex-col items-center py-16">
         <MagicCard
-          className="cursor-pointer rounded-t-lg p-3 bg-PATRON_DARK_GRAY flex-col items-center justify-center  border-PATRON_BORDER_COLOR w-4/5 md:w-3/5 shadow-2xl shadow-[#84dcff29]"
+          className="cursor-pointer rounded-t-lg p-3 dark:bg-PATRON_DARK_GRAY flex-col items-center justify-center  dark:border-PATRON_BORDER_COLOR w-4/5 md:w-3/5 shadow-2xl shadow-[#84dcff29]"
           gradientColor={'#1C1C1C'}
         >
           {isPending ? (
@@ -35,7 +35,7 @@ const PreviewCard = ({ imageUrl, isPending }: { imageUrl?: string; isPending?: b
           </div>
         </MagicCard>
         <MagicCard
-          className="cursor-pointer rounded-b-lg bg-PATRON_LIGHT_GRAY flex-col items-center justify-center border-PATRON_BORDER_COLOR w-4/5 md:w-3/5"
+          className="cursor-pointer rounded-b-lg bg-neutral-100 dark:bg-PATRON_LIGHT_GRAY flex-col items-center justify-center dark:border-PATRON_BORDER_COLOR w-4/5 md:w-3/5"
           gradientColor={'#1C1C1C'}
         >
           <p className="text-xs py-5 px-3 text-PATRON_TEXT_WHITE_SECONDARY">

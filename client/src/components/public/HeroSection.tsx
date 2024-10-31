@@ -166,7 +166,7 @@ export default function HeroSection() {
         <div className="flex flex-col w-full my-5">
           <BlurIn
             duration={1}
-            className="text-4xl md:text-6xl lg:w-4/5 mx-auto font-fira-code w-full text-center font-bold bg-gradient-to-br from-neutral-600 to-PATRON_BLACK dark:from-white dark:to-neutral-600 bg-clip-text text-transparent"
+            className="text-4xl md:text-6xl lg:w-4/5 mx-auto font-fira-code w-full text-center font-bold bg-gradient-to-br from-neutral-500 to-neutral-700 dark:from-white dark:to-neutral-600 bg-clip-text text-transparent"
             word="BUILD YOUR COMMUNITIES, SHARE YOUR PASSIONS AND CONNECT"
           />
           <p className="w-full mt-7 text-center text-sm sm:text-xl sm:w-2/3 mx-auto">
@@ -174,11 +174,10 @@ export default function HeroSection() {
             groups focused on shared passions.
           </p>
           <Button
-            variant={'patron'}
             onClick={signInWithEth}
-            className="cursor-pointer h-7 md:h-9 mt-4 md:mt-8 mx-auto text-black"
+            className="cursor-pointer h-7 md:h-9 mt-4 md:mt-8 mx-auto text-black dark:text-neutral-800 bg-neutral-300"
           >
-            {walletAddress ? 'Make Community' : 'Connect wallet'}
+            {walletAddress ? 'Make community' : 'Connect wallet'}
 
             <MoveRight className="h-4 ml-2" />
           </Button>

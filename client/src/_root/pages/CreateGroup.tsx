@@ -96,19 +96,20 @@ const CreateGroup = () => {
       <div className="w-full flex flex-col lg:flex-row justify-center items-start">
         <PreviewCard imageUrl={previewImageUrl} isPending={isPending} />
 
-        <div className="w-full order-5 h-full border-l lg:border-t-black border-l-PATRON_BORDER_COLOR flex flex-col justify-start items-start py-5">
-          <h1 className="text-xl  w-full pb-3 px-10 sm:text-center font-audio-wide border-b border-b-PATRON_BORDER_COLOR">
-            Create your own community
+        <div className="w-full order-5 h-full dark:border-l lg:dark:border-t-black dark:border-l-PATRON_BORDER_COLOR flex flex-col justify-start items-start py-5">
+          <h1 className="text-xl  w-full pb-3 px-10 sm:text-center font-audio-wide border-b dark:border-b-PATRON_BORDER_COLOR">
+            Create your own channel
           </h1>
           <div className="w-full items-center gap-1.5 mt-12 px-10 md:px-20">
             <Label htmlFor="picture" className="">
-              Your community's coverpage
+              Your channel's coverpage
             </Label>
             <div className="flex items-center  mt-3 gap-3">
               <Input onChange={handleChange} id="picture" type="file" className="w-2/3" />
               <Button
+                variant={'patron'}
                 onClick={handleSubmit}
-                className="w-1/3 text-rose-400 flex justify-center items-center"
+                className="w-1/3 text-rose-400 bg-neutral-300 flex justify-center items-center"
               >
                 {isPending ? (
                   <>
@@ -148,22 +149,23 @@ const CreateGroup = () => {
                 name="groupDescription"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Community's Story</FormLabel>
+                    <FormLabel>Your channel's Story</FormLabel>
                     <FormControl>
                       <Textarea placeholder="Share your passion!" {...field} />
                     </FormControl>
                     <FormDescription className="text-neutral-600">
-                      Describe your community's purpose and what makes it special.
+                      Describe your channel's purpose and what makes it special.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="flex justify-start items-center gap-4 ">
-                <Button type="submit" className="text-purple-500">
+                <Button variant={'patron'} type="submit" className="text-purple-500">
                   {isCreating ? <MoonLoader size={14} color="#fff" /> : 'Create Your Community'}
                 </Button>
                 <Button
+                  variant={'patron'}
                   onClick={() => navigate('/all-groups')}
                   type="button"
                   className="text-yellow-400 w-20"

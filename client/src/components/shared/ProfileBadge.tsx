@@ -162,16 +162,16 @@ const ProfileBadge = () => {
             className="rounded-full size-8 md:size-10"
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-neutral-900 border-stone-800 text-neutral-400 font-fira-code mr-10">
-          <DropdownMenuLabel className="text-stone-300">My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator className="bg-stone-800" />
+        <DropdownMenuContent className="dark:bg-neutral-900 dark:border-stone-800 dark:text-neutral-400 font-fira-code mr-10">
+          <DropdownMenuLabel className="dark:text-stone-300">My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator className="dark:bg-stone-800" />
 
-          <DropdownMenuItem className="hover:bg-transparent">
-            <DialogTrigger className="hover:text-white">Profile</DialogTrigger>
+          <DropdownMenuItem className="dark:hover:bg-transparent">
+            <DialogTrigger className="dark:hover:text-white">Profile</DialogTrigger>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="hover:text-white">Github</DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-stone-800" />
+          <DropdownMenuItem className="dark:hover:text-white">Github</DropdownMenuItem>
+          <DropdownMenuSeparator className="dark:bg-stone-800" />
           <DropdownMenuItem
             className="hover:text-red-400 text-rose-700 cursor-pointer"
             onClick={handleLogout}
@@ -183,9 +183,9 @@ const ProfileBadge = () => {
       {/** DIALOG */}
       {/** DIALOG */}
       {/** DIALOG */}
-      <DialogContent className="bg-neutral-950 w-10/12 text-stone-400 border-stone-800 rounded-lg font-fira-code">
+      <DialogContent className="dark:bg-neutral-950 w-10/12 text-neutral-600 dark:text-stone-400 border-stone-800 rounded-lg font-fira-code">
         <DialogHeader>
-          <DialogTitle className="text-white text-xl font-audio-wide font-thin border-b border-b-stone-800 py-2">
+          <DialogTitle className="dark:text-white text-xl font-audio-wide font-thin border-b dark:border-b-stone-800 py-2">
             Your Profile
           </DialogTitle>
           <DialogDescription></DialogDescription>
@@ -215,7 +215,7 @@ const ProfileBadge = () => {
                     ) : (
                       <button
                         onClick={() => setProfileEdit((prev) => !prev)}
-                        className="self-end relative top-2 p-1.5 bg-stone-800 rounded-full"
+                        className="self-end relative top-2 p-1.5 dark:bg-stone-800 rounded-full"
                       >
                         <X size={14} color="#fff" />
                       </button>
@@ -230,7 +230,6 @@ const ProfileBadge = () => {
                   <div className="flex flex-col gap-3 mt-8">
                     <div className="flex h-8 gap-2">
                       <Input
-                        className="h-full"
                         value={name}
                         onChange={(e) => {
                           if (nameEdit) {

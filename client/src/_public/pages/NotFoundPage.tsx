@@ -34,7 +34,7 @@ const NotFoundPage = () => {
                 <div className="w-60 border border-1 border-slate-800"></div>
                 <div className="flex flex-col">
                   <button className="w-40 ml-2 mt-5 p-1 border border-1 border-slate-800 rounded-md">
-                    Community
+                    Channel
                   </button>
                   <button className="w-40 ml-2 mt-3 p-1 border border-1 border-slate-800 rounded-md">
                     Popular
@@ -71,7 +71,7 @@ const NotFoundPage = () => {
                 <div className="w-60 border border-1 border-slate-800 border-b"></div>
                 <div className="flex flex-col">
                   <button className="w-40 ml-2 mt-5 p-1 border border-1 border-slate-800 rounded-md">
-                    Community
+                    Channel
                   </button>
                   <button className="w-40 ml-2 mt-3 p-1 border border-1 border-slate-800 rounded-md">
                     Popular

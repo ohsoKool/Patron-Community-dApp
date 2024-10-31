@@ -25,6 +25,7 @@ import { MoonLoader } from 'react-spinners';
 import useWalletStore from '@/lib/zustand/WalletStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const CreatePost = () => {
   const { slug } = useParams();
@@ -121,6 +122,7 @@ const CreatePost = () => {
                 />
                 <Input onChange={handleChange} id="picture" type="file" className="w-5/6" />
                 <Button
+                  variant={'patron'}
                   disabled={isPending}
                   onClick={handleSubmit}
                   type="button"
@@ -136,12 +138,14 @@ const CreatePost = () => {
                 <FormDescription>Upload something for visual showing</FormDescription>
                 <div className="flex items-center gap-5">
                   <Button
+                    variant={'patron'}
                     type="submit"
-                    className="mt-4 h-10 w-28 bg-PATRON_TEXT_WHITE_SECONDARY text-black"
+                    className="mt-4 h-10 w-28 bg-neutral-600 dark:bg-neutral-200 text-white dark:text-black"
                   >
                     Submit
                   </Button>
                   <Button
+                    variant={'patron'}
                     type="button"
                     className="mt-4 h-10 w-28 text-PATRON_GREEN bg-PATRON_LIGHT_GRAY"
                   >
@@ -150,12 +154,12 @@ const CreatePost = () => {
                 </div>
               </div>
               <img
-                src={
-                  previewImageUrl ||
-                  'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80'
-                }
+                src={previewImageUrl || '/image-placeholder.png'}
                 alt="Photo by Drew Beamer"
-                className="w-2/6 h-60 rounded-md object-cover"
+                className={cn(
+                  'w-2/6 h-60 rounded-md object-cover ',
+                  previewImageUrl.length > 0 ? 'opacity-100' : 'opacity-10'
+                )}
               />
             </div>
           </form>

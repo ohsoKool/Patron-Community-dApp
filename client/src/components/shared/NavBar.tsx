@@ -15,7 +15,7 @@ const NavBar = ({ showAddress = false }: NavBarType) => {
     <nav className="flex glassmorphism sticky top-0 items-center justify-between w-full border-b border-neutral-300 dark:border-b-PATRON_BORDER_COLOR px-10 py-3 pt-4">
       <div className="flex justify-center items-center gap-2">
         <Link to={'/'} className="flex justify-start items-center gap-2">
-          <img className="h-5 invert" src="/logo.svg" alt="logo" />
+          <img className="h-5 invert dark:invert-0" src="/logo.svg" alt="logo" />
           <h1 className="text-xl font-audio-wide text-black dark:text-white">Patron</h1>
         </Link>
 

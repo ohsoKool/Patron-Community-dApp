@@ -35,7 +35,7 @@ const AllGroups = () => {
 
   const menuObject = [
     {
-      label: 'Communtiy',
+      label: 'Channel',
       color: colors[randomNumber],
     },
     {
@@ -124,11 +124,11 @@ const AllGroups = () => {
           <li className="list-none hidden md:block">
             <div className="border-b border-neutral-300 dark:border-b-PATRON_BORDER_COLOR py-2 pt-3 px-5">
               <h1 className="text-lg text-neutral-800 dark:text-PATRON_TEXT_WHITE_PRIMARY">
-                CREATE A COMMUTIY
+                CREATE A CHANNEL
               </h1>
             </div>
             <div className="pb-10 py-3 flex flex-row flex-wrap justify-start items-center gap-3 px-4 border-b border-b-neutral-300 dark:border-b-PATRON_BORDER_COLOR">
-              <p className="text-xs">Have ideas in mind ? Want to create your community?</p>
+              <p className="text-xs">Have ideas in mind ? Want to create your Channel?</p>
               <Button
                 variant={'patron'}
                 onClick={() => navigate('/create-group')}

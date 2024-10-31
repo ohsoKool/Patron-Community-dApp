@@ -100,7 +100,7 @@ const GroupPage = () => {
             <div className="flex items-center gap-2">
               <UserPlus size={15} color="#808080" />
               <span className=" text-sm text-neutral-500 dark:text-PATRON_TEXT_WHITE_SECONDARY">
-                {' Joined this community on ' + joinedDate}
+                {' Joined this channel on ' + joinedDate}
               </span>
             </div>
           </div>

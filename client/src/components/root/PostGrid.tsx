@@ -65,7 +65,7 @@ const PostGrid = () => {
           </div>
           <DropdownMenuSeparator className="bg-neutral-300 dark:bg-PATRON_BORDER_COLOR w-full h-[0.5px]" />
           <p className="w-full text-xs text-neutral-600 dark:text-PATRON_TEXT_WHITE_SECONDARY/60 text-start p-2">
-            {each.postDescription}
+            {each.postDescription.split(' ').slice(0, 20).join(' ')}...
           </p>
           <DropdownMenuSeparator className="bg-neutral-300 dark:bg-PATRON_BORDER_COLOR h-[0.5px]" />
           <div className="w-full flex items-center p-3">
