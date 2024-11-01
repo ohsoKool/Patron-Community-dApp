@@ -159,7 +159,7 @@ const ProfileBadge = () => {
           <img
             src={currentProfile || user?.image || 'https://github.com/shadcn.png'}
             alt="profile"
-            className="rounded-full size-8 md:size-10"
+            className="rounded-full size-8 md:size-9"
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="dark:bg-neutral-900 dark:border-stone-800 dark:text-neutral-400 font-fira-code mr-10">

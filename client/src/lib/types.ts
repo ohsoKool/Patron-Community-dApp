@@ -1,3 +1,6 @@
+import { AbiItem } from 'web3';
+import { TransactionStatus } from '@/lib/enum';
+
 export type ChangeUserImageType = {
   address: string;
   image: string;
@@ -34,4 +37,19 @@ export type PostType = {
     name: string;
     image: string;
   };
+};
+
+export type GradientBackgroundPropType = {
+  className: string;
+};
+
+export type GetContractPropType = {
+  contractABI: AbiItem[];
+  contractAddress: string;
+};
+
+export type UseTransferFundsResult = {
+  contractMethod: (amount: string | number) => Promise<TransactionStatus>;
+  status: TransactionStatus;
+  error?: string;
 };

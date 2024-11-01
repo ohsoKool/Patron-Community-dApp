@@ -1,3 +1,15 @@
+import {
+  ArrowLeftFromLine,
+  Award,
+  BadgeInfo,
+  FileLock2,
+  Handshake,
+  HomeIcon,
+  Search,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
+
 export const AvatarList = [
   {
     id: 1,
@@ -53,5 +65,101 @@ export const AvatarList = [
     id: 11,
     name: 'Kate',
     image: 'https://i.pinimg.com/564x/9b/b0/66/9bb066864b0d225c324551ee2c83125d.jpg',
+  },
+];
+
+export const featureGrid = [
+  {
+    title: 'Decentralized Identity Management',
+    description:
+      'Foster dynamic and secure interactions within a decentralized, blockchain-powered community.',
+  },
+  {
+    title: 'End-to-End Encryption',
+    description:
+      'Ensure user privacy with encrypted communication and data-sharing protocols throughout the platform.',
+  },
+  {
+    title: 'Immutable Record Keeping',
+    description:
+      'Store all interactions and transactions on a tamper-proof blockchain ledger for complete transparency.',
+  },
+  {
+    title: 'Smart Contract Integration',
+    description:
+      'Automate and streamline community governance and transactions with self-executing smart contracts.',
+  },
+  {
+    title: 'Tokenized Reputation System',
+    description:
+      'Reward positive contributions with tokens, allowing users to build trust and influence within the community.',
+  },
+  {
+    title: 'Privacy-Focused Data Sharing',
+    description:
+      'Provide users with full control over their data, enabling secure and permission-based sharing.',
+  },
+];
+
+export const SideBarList = [
+  {
+    title: 'Discover',
+    children: [
+      {
+        title: 'Home',
+        path: '/',
+        icon: HomeIcon,
+      },
+      {
+        title: 'Explore',
+        path: '/explore',
+        icon: Search,
+      },
+    ],
+  },
+  {
+    title: 'Community',
+    children: [
+      {
+        title: 'Create Community',
+        path: '/create-group',
+        icon: Users,
+      },
+      {
+        title: 'Most Popular',
+        path: '/all-groups',
+        icon: TrendingUp,
+      },
+      {
+        title: 'Joined Communities',
+        path: '/',
+        icon: Award,
+      },
+    ],
+  },
+  {
+    title: 'Resources',
+    children: [
+      {
+        title: 'Help & Support',
+        path: '/',
+        icon: BadgeInfo,
+      },
+      {
+        title: 'Terms & Conditions',
+        path: '/',
+        icon: Handshake,
+      },
+      {
+        title: 'Privacy Policy',
+        path: '/',
+        icon: FileLock2,
+      },
+      {
+        title: 'About',
+        path: '/',
+        icon: ArrowLeftFromLine,
+      },
+    ],
   },
 ];
