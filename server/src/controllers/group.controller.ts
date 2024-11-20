@@ -3,6 +3,13 @@ import { ApiError } from '../utils/ApiError';
 import { db } from '../utils/db';
 import { ApiResponse } from '../utils/ApiResponse';
 import { uploadOnCloudinary } from '../utils/cloudinary';
+import {
+    createGroupToSchema,
+    deletedGroupToSchema,
+    editGroupDescriptionToSchema,
+    editGroupNameToSchema,
+    getGroupByIdToSchema,
+} from '../utils/schema';
 
 export const uploadImageToCloudinary = async (req: Request, res: Response) => {
     const imageFileLocalPath = req.file?.path;
@@ -23,16 +30,12 @@ export const uploadImageToCloudinary = async (req: Request, res: Response) => {
 };
 
 export const createGroup = async (req: Request, res: Response) => {
-    const { groupName, groupDescription, ownerId, groupCoverImage } = req.body;
-
-    [groupDescription, groupName, ownerId].some((each) => {
-        if (!each) {
-            throw new ApiError(
-                200,
-                'CREATE GROUP : GROUP CONTROLLER : All fields are required'
-            );
-        }
-    });
+    // const { groupName, groupDescription, ownerId, groupCoverImage } = req.body;
+    const { success, data } = createGroupToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'ADDUSERTOGROUP : GROUPUSER CONTROLLER');
+    }
+    const { groupName, groupDescription, ownerId, groupCoverImage } = data;
 
     const newGroup = await db.group.create({
         data: {
@@ -57,7 +60,12 @@ export const createGroup = async (req: Request, res: Response) => {
 };
 
 export const editGroupName = async (req: Request, res: Response) => {
-    const { groupName, groupId } = req.query;
+    // const { groupName, groupId } = req.query;
+    const { success, data } = editGroupNameToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'EDITGROUPNAME : GROUP CONTROLLER');
+    }
+    const { groupName, groupId } = data;
 
     if (!groupName) {
         throw new ApiError(
@@ -101,7 +109,12 @@ export const editGroupName = async (req: Request, res: Response) => {
 };
 
 export const editGroupDescription = async (req: Request, res: Response) => {
-    const { groupDescription, groupId } = req.query;
+    // const { groupDescription, groupId } = req.query;
+    const { success, data } = editGroupDescriptionToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'EDITGROUPNAME : GROUP CONTROLLER');
+    }
+    const { groupDescription, groupId } = data;
 
     console.log('REQ QUERY: ', req.query);
 
@@ -147,8 +160,12 @@ export const editGroupDescription = async (req: Request, res: Response) => {
 };
 
 export const deletedGroup = async (req: Request, res: Response) => {
-    const { groupId } = req.params;
-
+    // const { groupId } = req.params;
+    const { success, data } = deletedGroupToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'DELETEDGROUP : GROUP CONTROLLER');
+    }
+    const { groupId } = data;
     if (!groupId) {
         throw new ApiError(
             400,
@@ -201,7 +218,12 @@ export const getAllGroups = async (req: Request, res: Response) => {
 };
 
 export const getGroupById = async (req: Request, res: Response) => {
-    const { groupId } = req.query;
+    // const { groupId } = req.query;
+    const { success, data } = getGroupByIdToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'GETGROUPBYID : GROUP CONTROLLER');
+    }
+    const { groupId } = data;
 
     console.log('GROUP USER GROUP USER: ', groupId);
 

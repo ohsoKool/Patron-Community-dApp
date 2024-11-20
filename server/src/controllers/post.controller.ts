@@ -2,19 +2,24 @@ import { Request, Response } from 'express';
 import { ApiError } from '../utils/ApiError';
 import { db } from '../utils/db';
 import { ApiResponse } from '../utils/ApiResponse';
+import {
+    createPostToSchema,
+    getAllPostsInGroupToSchema,
+    getAllPostsOfUserToSchema,
+    getAllUnSolvedPostsInGroupToSchema,
+    togglePostSolvedToSchema,
+} from '../utils/schema';
 
 export const createPost = async (req: Request, res: Response) => {
-    const { postImage, postTitle, postDescription, ownerId, groupId } =
-        req.body;
+    // const { postImage, postTitle, postDescription, ownerId, groupId } =req.body;
+    const { success, data } = createPostToSchema.safeParse(req.query);
+    if (!success)
+        throw new ApiError(
+            400,
+            'CREATE POST : POST CONTROLLER : POST CONTROLLER'
+        );
 
-    [postImage, , postTitle, postDescription, ownerId, groupId].some((each) => {
-        if (!each) {
-            throw new ApiError(
-                400,
-                'CREATE POST : POST CONTROLLER : All fields are required'
-            );
-        }
-    });
+    const { postImage, postTitle, postDescription, ownerId, groupId } = data;
 
     console.log('USERID: ', ownerId);
 
@@ -61,8 +66,12 @@ export const deletePost = async (req: Request, res: Response) => {
 };
 
 export const togglePostSolved = async (req: Request, res: Response) => {
-    const { whoSolvedId, postId } = req.query;
-
+    // const { whoSolvedId, postId } = req.query;
+    const { success, data } = togglePostSolvedToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'TOGGLE POST : POST CONTROLLER');
+    }
+    const { whoSolvedId, postId } = data;
     if (!whoSolvedId) {
         throw new ApiError(400, 'Users id who solved is required');
     }
@@ -95,7 +104,12 @@ export const togglePostSolved = async (req: Request, res: Response) => {
 };
 
 export const getAllPostsInGroup = async (req: Request, res: Response) => {
-    const { groupId } = req.query;
+    // const { groupId } = req.query;
+    const { success, data } = getAllPostsInGroupToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'GETALLPOSTSINGROUP : POST CONTROLLER');
+    }
+    const { groupId } = data;
 
     const skip = 0;
 
@@ -147,7 +161,11 @@ export const getAllPostsInGroup = async (req: Request, res: Response) => {
 };
 
 export const getAllPostsOfUser = async (req: Request, res: Response) => {
-    const { limit, pageNo, userId } = req.query;
+    // const { limit, pageNo, userId } = req.query;
+    const { success, data } = getAllPostsOfUserToSchema.safeParse(req.query);
+    if (!success)
+        throw new ApiError(500, 'GETALLPOSTSOFFUSER : POST CONTROLLER');
+    const { limit, pageNo, userId } = data;
 
     const skip = (Number(pageNo) - 1) * Number(limit);
 
@@ -190,7 +208,14 @@ export const getAllUnSolvedPostsInGroup = async (
     req: Request,
     res: Response
 ) => {
-    const { limit, pageNo, groupId } = req.query;
+    // const { limit, pageNo, groupId } = req.query;
+    const { success, data } = getAllUnSolvedPostsInGroupToSchema.safeParse(
+        req.query
+    );
+    if (!success) {
+        throw new ApiError(500, 'GETALLUNSOLVEDPOSTSINGROUP : POST CONTROLLER');
+    }
+    const { limit, pageNo, groupId } = data;
 
     const skip = (Number(pageNo) - 1) * Number(limit);
 

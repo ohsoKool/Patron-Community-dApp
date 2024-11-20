@@ -3,18 +3,20 @@ import { ApiError } from '../utils/ApiError';
 import { getUserInGroup } from '../helpers/groupUser.helper';
 import { ApiResponse } from '../utils/ApiResponse';
 import { db } from '../utils/db';
+import {
+    addUserToGroupToSchema,
+    getAllGroupUsersToSchema,
+    getUserJoinedDateToSchema,
+    removeUserFromGroupToSchema,
+} from '../utils/schema';
 
 export const addUserToGroup = async (req: Request, res: Response) => {
-    const { groupId, walletAddress } = req.query;
-
-    [groupId, walletAddress].some((each) => {
-        if (!each) {
-            throw new ApiError(
-                400,
-                'ADD USER TO GROUP : GROUP USER CONTROLLER : All fields are required'
-            );
-        }
-    });
+    // const { groupId, walletAddress } = req.query;
+    const { success, data } = addUserToGroupToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'ADDUSERTOGROUP : GROUPUSER CONTROLLER');
+    }
+    const { groupId, walletAddress } = data;
 
     const user = await db.user.findFirst({
         where: {
@@ -73,16 +75,12 @@ export const addUserToGroup = async (req: Request, res: Response) => {
 };
 
 export const removeUserFromGroup = async (req: Request, res: Response) => {
-    const { groupId, userId } = req.query;
-
-    [groupId, userId].some((each) => {
-        if (!each) {
-            throw new ApiError(
-                400,
-                'ADD USER TO GROUP : GROUP USER CONTROLLER : All fields are required'
-            );
-        }
-    });
+    // const { groupId, userId } = req.query;
+    const { success, data } = removeUserFromGroupToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'ADDUSERTOGROUP : GROUPUSER CONTROLLER');
+    }
+    const { groupId, userId } = data;
 
     const alreadyExistInGroup = await getUserInGroup(
         String(userId),
@@ -110,7 +108,12 @@ export const removeUserFromGroup = async (req: Request, res: Response) => {
 };
 
 export const getAllGroupUsers = async (req: Request, res: Response) => {
-    const { limit, pageNo, groupId } = req.query;
+    // const { limit, pageNo, groupId } = req.query;
+    const { success, data } = getAllGroupUsersToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'ADDUSERTOGROUP : GROUPUSER CONTROLLER');
+    }
+    const { limit, pageNo, groupId } = data;
 
     const skip = (Number(pageNo) - 1) * Number(limit);
 
@@ -146,7 +149,12 @@ export const getAllGroupUsers = async (req: Request, res: Response) => {
 };
 
 export const getUserJoinedDate = async (req: Request, res: Response) => {
-    const { userId, groupId } = req.query;
+    // const { userId, groupId } = req.query;
+    const { success, data } = getUserJoinedDateToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'ADDUSERTOGROUP : GROUPUSER CONTROLLER');
+    }
+    const { userId, groupId } = data;
 
     if (!userId) {
         throw new ApiError(

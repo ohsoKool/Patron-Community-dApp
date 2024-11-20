@@ -5,11 +5,25 @@ import { db } from '../utils/db';
 import { getUserByAddress, getUserById } from '../helpers/user.helper';
 import { ApiResponse } from '../utils/ApiResponse';
 import { generateUsername } from '../utils/generateUsername';
+import {
+    addUserToDbSchema,
+    changeProfileImageSchema,
+    changeProfileNameSchema,
+    checkIfUserExistsToSchema,
+    retrieveUserByAddressToSchema,
+} from '../utils/schema';
 
 export const addUserToDb = async (req: Request, res: Response) => {
-    const { address } = req.query;
+    const { success, data } = addUserToDbSchema.safeParse(req.query);
 
-    console.log('ADDRESS : ', address);
+    if (!success) {
+        throw new ApiError(
+            400,
+            'ADD USER TO DB : USER CONTROLLER : Address is required'
+        );
+    }
+
+    const { address } = data;
 
     if (!address) {
         throw new ApiError(
@@ -98,7 +112,19 @@ export const removeUserFromDb = async (req: Request, res: Response) => {
 };
 
 export const retrieveUserByAddress = async (req: Request, res: Response) => {
-    const { address } = req.query;
+    // const { address } = req.query;
+    const { success, data } = retrieveUserByAddressToSchema.safeParse(
+        req.query
+    );
+
+    if (!success) {
+        throw new ApiError(
+            400,
+            'ADD USER TO DB : USER CONTROLLER : Address is required'
+        );
+    }
+
+    const { address } = data;
 
     if (!address) {
         throw new ApiError(
@@ -143,7 +169,16 @@ export const retrieveUserByAddress = async (req: Request, res: Response) => {
 };
 
 export const changeProfileImage = async (req: Request, res: Response) => {
-    const { image, address } = req.body;
+    // const { image, address } = req.body;
+    const { success, data } = changeProfileImageSchema.safeParse(req.query);
+
+    if (!success) {
+        throw new ApiError(
+            400,
+            'ADD USER TO DB : USER CONTROLLER : Address is required'
+        );
+    }
+    const { address, image } = data;
 
     console.log('IMAGE: ', image);
 
@@ -185,7 +220,12 @@ export const changeProfileImage = async (req: Request, res: Response) => {
 };
 
 export const changeProfileName = async (req: Request, res: Response) => {
-    const { name, address } = req.body;
+    // const { name, address } = req.body;
+    const { success, data } = changeProfileNameSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(400, 'CHANGE PROFILE NAME');
+    }
+    const { name, address } = data;
 
     console.log('NAME: ', name);
 
@@ -227,8 +267,15 @@ export const changeProfileName = async (req: Request, res: Response) => {
 };
 
 export const checkIfUserExists = async (req: Request, res: Response) => {
-    const { address } = req.query;
-
+    // const { address } = req.query;
+    const { success, data } = checkIfUserExistsToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(
+            400,
+            'CHECK IF USER EXISTS : USER CONTROLLER : Address is required'
+        );
+    }
+    const { address } = data;
     console.log('ADDRESS : ', address);
 
     if (!address) {
@@ -258,8 +305,15 @@ export const checkIfUserExists = async (req: Request, res: Response) => {
 };
 
 export const getUserIdByAddress = async (req: Request, res: Response) => {
-    const { address } = req.query;
-
+    // const { address } = req.query;
+    const { success, data } = checkIfUserExistsToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(
+            400,
+            'CHECK IF USER EXISTS : USER CONTROLLER : Address is required'
+        );
+    }
+    const { address } = data;
     if (!address) {
         throw new ApiError(
             400,
