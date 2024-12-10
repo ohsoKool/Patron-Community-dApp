@@ -14,6 +14,45 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { GroupType } from '@/lib/types';
 import { Group } from '@/components/root/Group';
 
+const dummyGroups = [
+  {
+    id: '1',
+    groupCoverImage: 'https://via.placeholder.com/150', // Placeholder image URL
+    groupName: 'Nature Enthusiasts',
+    groupDescription: 'A group for people who love exploring nature and the outdoors.',
+    members: [
+      { id: '101', name: 'Alice' },
+      { id: '102', name: 'Bob' },
+      { id: '103', name: 'Charlie' },
+    ],
+    hasJoined: true,
+  },
+  {
+    id: '2',
+    groupCoverImage: 'https://via.placeholder.com/150',
+    groupName: 'Tech Innovators',
+    groupDescription: 'Discussing the latest trends in technology and innovation.',
+    members: [
+      { id: '201', name: 'David' },
+      { id: '202', name: 'Eva' },
+    ],
+    hasJoined: false,
+  },
+  {
+    id: '3',
+    groupCoverImage: 'https://via.placeholder.com/150',
+    groupName: 'Book Lovers',
+    groupDescription: 'A community for people who enjoy reading and sharing books.',
+    members: [
+      { id: '301', name: 'Frank' },
+      { id: '302', name: 'Grace' },
+      { id: '303', name: 'Hannah' },
+      { id: '304', name: 'Ian' },
+    ],
+    hasJoined: true,
+  },
+];
+
 const GroupDialog = () => {
   const [groups, setGroups] = useState<GroupType[] | null>(null);
   const [groupsWithJoinStatus, setGroupsWithJoinStatus] = useState<GroupType[] | null | any[]>([]);
@@ -26,28 +65,28 @@ const GroupDialog = () => {
   const { mutateAsync: addUserToGroup } = useAddUserToGroup();
   const { mutateAsync: getHasUserJoined } = useGetHasUserJoined();
 
-  useEffect(() => {
-    getAllGroups().then((response) => {
-      generatePreSignedUrls(response).then((response) => {
-        setGroups(response);
-      });
-      // setGroups(response);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getAllGroups().then((response) => {
+  //     generatePreSignedUrls(response).then((response) => {
+  //       setGroups(response);
+  //     });
+  //     // setGroups(response);
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if (groups) {
-      Promise.all(
-        groups.map(async (each) => {
-          const hasJoined = await getHasUserJoined({
-            walletAddress: String(walletAddress),
-            groupId: each.id,
-          });
-          return { ...each, hasJoined };
-        })
-      ).then(setGroupsWithJoinStatus);
-    }
-  }, [groups, walletAddress]);
+  // useEffect(() => {
+  //   if (groups) {
+  //     Promise.all(
+  //       groups.map(async (each) => {
+  //         const hasJoined = await getHasUserJoined({
+  //           walletAddress: String(walletAddress),
+  //           groupId: each.id,
+  //         });
+  //         return { ...each, hasJoined };
+  //       })
+  //     ).then(setGroupsWithJoinStatus);
+  //   }
+  // }, [groups, walletAddress]);
 
   const handleJoin = async (groupId: string) => {
     const response = await addUserToGroup({
@@ -103,7 +142,7 @@ const GroupDialog = () => {
           </>
         ) : (
           <>
-            {groupsWithJoinStatus?.map((each) => {
+            {dummyGroups?.map((each) => {
               return (
                 <Group
                   id={each.id}
